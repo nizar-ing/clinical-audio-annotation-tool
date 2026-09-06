@@ -1,0 +1,17 @@
+{
+  "name": "contracts",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "scripts": {
+    "dev": "echo 'contracts: no dev server'",
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "vite": "^8.2.2",
+    "vitest": "^5.0.0"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "name": "api",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/main/server.ts",
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/main/server.js",
+    "test": "depcruise --config .dependency-cruiser.js src && vitest run",
+    "typecheck": "tsc --noEmit",
+    "db:seed": "prisma db seed",
+    "migrate:deploy": "prisma migrate deploy"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  },
+  "dependencies": {
+    "@prisma/client": "^7.10.0",
+    "dotenv": "^16.0.0",
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^22.20.1",
+    "dependency-cruiser": "^18.2.0",
+    "prisma": "^7.10.0",
+    "tsx": "^4.23.13",
+    "vite": "^8.2.2",
+    "vitest": "^5.0.0"
+  }
+}

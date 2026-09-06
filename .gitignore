@@ -1,0 +1,27 @@
+node_modules/
+dist/
+coverage/
+uploads/
+postgres-data/
+
+# Environment
+.env
+
+# Yarn
+.yarn/cache
+.yarn/install-state.gz
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.idea/
+*.swp
+*.swo
+
+# Project planning and operating documents — kept locally, not published.
+AUDIO_TRANSCRIPTION_ANNOTATION_TOOL_TASK.md
+CLAUDE.md
+DESIGN.md
+IMPLEMENTATION_PLAN.md

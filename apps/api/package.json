@@ -16,13 +16,18 @@
     "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
+    "@prisma/adapter-pg": "^7.10.0",
     "@prisma/client": "^7.10.0",
     "dotenv": "^16.0.0",
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "ffmpeg-static": "^5.3.0",
+    "ffprobe-static": "^3.1.0",
+    "pg": "^8.23.0"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",
     "@types/node": "^22.20.1",
+    "@types/pg": "^8",
     "dependency-cruiser": "^18.2.0",
     "prisma": "^7.10.0",
     "tsx": "^4.23.13",

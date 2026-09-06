@@ -1,0 +1,22 @@
+[
+  {
+    "path": "audio/demo-01.wav",
+    "label": "Kontrollierte Rueckenlagerung des Patienten auf dem Operationstisch. Lagerungshilfen werden angelegt. Perioperative Antibiotikaprophylaxe mit Cefazolin zwei Gramm intravenoes wird gegeben. Schnitt in der Medianlinie. Praeperitoneale Praepaeration. Schrittweise Wundverschluss."
+  },
+  {
+    "path": "audio/demo-02.wav",
+    "label": "Kurzer Testaufnahme fuer die Ablehnungsregel."
+  },
+  {
+    "path": "audio/demo-03.mp3",
+    "label": "Patient wird in Rueckenlage gelagert. Desinfektion und steriles Abdecken des Operationsfeldes. Inzision erfolgt."
+  },
+  {
+    "path": "audio/demo-05.wav",
+    "label": "Single-Shot-Antibiose mit Cefuroxim eintausendfuenfhundert Milligramm intravenoes. Blutdruck 120 zu 80. Neue Zeile. Wundverschluss mit sechs null Prolene."
+  },
+  {
+    "path": "audio/demo-99.wav",
+    "label": "Transkriptzeile ohne passende Audiodatei. Dient zur Demonstration der ungematchten Eintraege."
+  }
+]

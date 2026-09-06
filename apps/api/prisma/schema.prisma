@@ -5,3 +5,89 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+enum RecordingStatus {
+  UPLOADED
+  REJECTED_TOO_SHORT
+  UNPAIRED
+  QUEUED
+  IN_PROGRESS
+  DONE
+}
+
+enum SpanType {
+  MEDICAL_TERM
+  MEASUREMENT
+  NUMBER
+  FORMATTING_COMMAND
+  NAMED_ENTITY
+  SPELLED_OUT
+}
+
+model Recording {
+  id               String              @id @default(uuid())
+  originalFilename String
+  storageKey       String
+  mimeType         String
+  sizeBytes        Int
+  durationSeconds  Float
+  sampleRate       Int
+  channels         Int
+  bitDepth         Int?
+  headerMetadata   Json?
+  status           RecordingStatus     @default(UPLOADED)
+  annotator        String              @default("")
+  createdAt        DateTime            @default(now())
+
+  transcript       Transcript?
+  conditions       RecordingConditions?
+  importRow        ImportRow?          @relation("MatchedRecording")
+}
+
+model Transcript {
+  id              String           @id @default(uuid())
+  recordingId     String           @unique
+  recording       Recording        @relation(fields: [recordingId], references: [id], onDelete: Cascade)
+  originalText    String
+  correctedText   String
+  wordTimings     Json?
+  alignmentMethod String           @default("none")
+  werCached       Float?
+  updatedAt       DateTime         @updatedAt
+
+  annotations     AnnotationSpan[]
+}
+
+model AnnotationSpan {
+  id           String     @id @default(uuid())
+  transcriptId String
+  transcript   Transcript @relation(fields: [transcriptId], references: [id], onDelete: Cascade)
+  spanType     SpanType
+  startOffset  Int
+  endOffset    Int
+  anchorText   String
+  attributes   Json
+  needsReview  Boolean    @default(false)
+  createdAt    DateTime   @default(now())
+}
+
+model RecordingConditions {
+  id                     String    @id @default(uuid())
+  recordingId            String    @unique
+  recording              Recording @relation(fields: [recordingId], references: [id], onDelete: Cascade)
+  derivedSpeechRateWpm   Float
+  overrideSpeechRateWpm  Float?
+  derivedDistanceBucket  String
+  overrideDistanceBucket String?
+  distanceMethod         String
+}
+
+model ImportRow {
+  id                 String     @id @default(uuid())
+  path               String
+  label              String
+  matchedRecordingId String?    @unique
+  matchedRecording   Recording? @relation("MatchedRecording", fields: [matchedRecordingId], references: [id])
+  errorCode          String?
+  createdAt          DateTime   @default(now())
+}

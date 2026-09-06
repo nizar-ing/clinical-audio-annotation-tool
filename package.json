@@ -1,0 +1,28 @@
+{
+  "name": "clinannotate",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "packageManager": "yarn@4.18.0",
+  "scripts": {
+    "dev": "yarn workspaces foreach -Ap --interlaced run dev",
+    "build": "yarn workspaces foreach -Ap run build",
+    "test": "yarn workspaces foreach -Ap run test",
+    "lint": "eslint .",
+    "typecheck": "yarn workspaces foreach -Ap run typecheck",
+    "bootstrap": "yarn install && yarn workspace api prisma migrate deploy && yarn workspace api db:seed && yarn dev"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.10.0",
+    "eslint-plugin-vue": "^10.10.0",
+    "globals": "^17.12.0",
+    "prettier": "^3.9.6",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.69.0",
+    "vue-eslint-parser": "^10.4.1"
+  }
+}

@@ -4,8 +4,6 @@ A gold standard annotation workbench for German clinical dictation.
 
 Doctors dictate operation reports, and a speech model produces a first pass transcript. ClinAnnotate is the tool a human annotator uses, all day, to correct that transcript and enrich it with structured spans, so the result can be used both to measure the model and to fine tune it.
 
-Built for the take home exercise "Audio Transcription Annotation Tool".
-
 [![Node](https://img.shields.io/badge/node-22.x-339933?logo=node.js&logoColor=white)](https://nodejs.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-6.x-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Express](https://img.shields.io/badge/Express-5-000000?logo=express&logoColor=white)](https://expressjs.com)
@@ -17,7 +15,7 @@ Built for the take home exercise "Audio Transcription Annotation Tool".
 
 ## Contents
 
-[Quick start](#quick-start) | [Demo path](#demo-path) | [Status](#status) | [Architecture](#architecture) | [Stack](#stack) | [Using the tool](#using-the-tool) | [Keyboard shortcuts](#keyboard-shortcuts) | [Tests](#tests) | [Project structure](#project-structure) | [API](#api) | [Export format](#export-format) | [Decisions](#decisions-and-ambiguity-resolutions) | [Limitations](#known-limitations)
+[Quick start](#quick-start) | [Demo path](#demo-path) | [Requirements coverage](#requirements-coverage) | [Architecture](#architecture) | [Stack](#stack) | [Using the tool](#using-the-tool) | [Keyboard shortcuts](#keyboard-shortcuts) | [Tests](#tests) | [Project structure](#project-structure) | [API](#api) | [Export format](#export-format) | [Decisions](#decisions-and-ambiguity-resolutions) | [Limitations](#known-limitations)
 
 ---
 
@@ -79,7 +77,7 @@ Transcripts use the format from the brief:
 ]
 ```
 
-## Status
+## Requirements coverage
 
 The honest state of every requirement in the brief.
 
@@ -117,9 +115,9 @@ The honest state of every requirement in the brief.
 | **Beyond the brief** | | |
 | Word error rate, original against corrected | Done | Per item in the queue, plus a corpus aggregate in the export |
 | Architecture test: the domain layer imports no framework | Done | A dependency cruiser rule, run by `yarn test` |
-| **Cut** | | |
-| Undo and redo across span operations | Cut | Native text undo only. See [`DESIGN.md`](./DESIGN.md), section 5 |
-| MinIO wiring | Cut | Port and adapter exist. Local disk is wired, following the one machine assumption |
+| **Out of scope** | | |
+| Undo and redo across span operations | Out of scope | Native text undo only. See [`DESIGN.md`](./DESIGN.md), section 5 |
+| MinIO wiring | Out of scope | Port and adapter exist. Local disk is wired, following the one machine assumption |
 
 ## Architecture
 

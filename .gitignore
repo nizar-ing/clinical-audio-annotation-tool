@@ -22,6 +22,7 @@ Thumbs.db
 *.swo
 
 # Project planning and operating documents — kept locally, not published.
+strip_coauthor.mjs
 AUDIO_TRANSCRIPTION_ANNOTATION_TOOL_TASK.md
 CLAUDE.md
 DESIGN.md

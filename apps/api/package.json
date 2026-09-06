@@ -22,14 +22,19 @@
     "express": "^5.2.1",
     "ffmpeg-static": "^5.3.0",
     "ffprobe-static": "^3.1.0",
-    "pg": "^8.23.0"
+    "multer": "^2.3.0",
+    "pg": "^8.23.0",
+    "zod": "^4.5.4"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",
+    "@types/multer": "^2.2.0",
     "@types/node": "^22.20.1",
     "@types/pg": "^8",
+    "@types/supertest": "^7.2.1",
     "dependency-cruiser": "^18.2.0",
     "prisma": "^7.10.0",
+    "supertest": "^7.2.2",
     "tsx": "^4.23.13",
     "vite": "^8.2.2",
     "vitest": "^5.0.0"

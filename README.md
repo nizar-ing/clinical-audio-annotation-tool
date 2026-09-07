@@ -133,9 +133,13 @@ flowchart LR
     API --> FS[("Local disk or MinIO")]
 ```
 
-Each context is layered as domain, application, infrastructure and presentation, with dependencies that only point inward. The domain layer holds the parts that are actually this product: the 15 second routing rule, the pairing ladder, unit normalisation, span re-anchoring and word error rate. It imports nothing, so no Express, no Prisma, no Zod and no Node built ins, and those pieces are unit tested without a database, a server or a browser.
+The API follows Domain-Driven Design. Each bounded context above is internally structured in four layers — domain, application, infrastructure, presentation — with dependencies that only ever point inward:
 
-That claim is checked rather than merely asserted. A dependency cruiser rule fails the test suite if any file under a domain folder imports a framework.
+![DDD layer model applied in this project](docs/images/DDD_approach.png)
+
+The domain layer holds the parts that are actually this product: the 15 second routing rule, the pairing ladder, unit normalisation, span re-anchoring and word error rate. It imports nothing — no Express, no Prisma, no Zod, no Node built-ins — and those pieces are unit tested without a database, a server or a browser.
+
+That claim is checked rather than merely asserted. A dependency-cruiser rule fails the test suite if any file under a domain folder imports a framework.
 
 Express has no dependency injection container, so the composition root is written by hand: 48 lines in `src/main/container.ts` that construct every adapter and pass them into each context's module factory. Every dependency edge in the system is visible in that one file. The full reasoning is in [`IMPLEMENTATION_PLAN.md`](./IMPLEMENTATION_PLAN.md#4-architecture).
 
@@ -231,7 +235,7 @@ fixtures/                # demo audio and transcripts.json
 docker-compose.yml
 ```
 
-The naming follows [clean-DDD_ecommerce-api](https://github.com/nizar-ing/clean-DDD_ecommerce-api): `*.entity.ts`, `*.vo.ts`, `*.port.ts`, `*.command.ts`, `*.handler.ts`, `*.dto.ts`, `*.repository.ts`, `*.adapter.ts`, `*.module.ts` and `*.exception.ts`.
+File naming is consistent with the DDD conventions used across this author's other projects: `*.entity.ts`, `*.vo.ts`, `*.port.ts`, `*.command.ts`, `*.handler.ts`, `*.dto.ts`, `*.repository.ts`, `*.adapter.ts`, `*.module.ts` and `*.exception.ts`.
 
 ## API
 

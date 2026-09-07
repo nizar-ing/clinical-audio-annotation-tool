@@ -137,7 +137,7 @@ Express has no dependency injection container, so the composition root is writte
 
 | Layer | Choice |
 |---|---|
-| Runtime | Node.js 22, TypeScript 5 in strict mode |
+| Runtime | Node.js 22, TypeScript 6 in strict mode |
 | HTTP | Express 5 |
 | ORM and migrations | Prisma, confined to `infrastructure/adapters`. The domain never imports it |
 | Database | PostgreSQL 16, via Docker Compose |

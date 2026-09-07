@@ -1,5 +1,6 @@
 import { UnsupportedFormatException } from '../exceptions/unsupported-format.exception.js';
 
+// File extension is client-controlled and untrustworthy; validate against the actual byte signature
 const MAGIC: Record<string, (buf: Buffer) => boolean> = {
   'audio/wav': (b) => b.slice(0, 4).toString() === 'RIFF' && b.slice(8, 12).toString() === 'WAVE',
   'audio/mpeg': (b) => b[0] === 0x49 && b[1] === 0x44 && b[2] === 0x33 // ID3

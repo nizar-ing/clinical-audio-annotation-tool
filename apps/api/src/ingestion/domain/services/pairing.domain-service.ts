@@ -77,7 +77,7 @@ export class PairingDomainService {
     const byBase = recordings.filter((r) => new AudioFilename(r.storagePath).base === rowFn.base);
     if (byBase.length > 0) return byBase;
 
-    // Rung 3: case-insensitive basename
+    // Rung 3: case-insensitive basename — recorders on Windows often mangle filename casing
     const byBaseLower = recordings.filter(
       (r) => new AudioFilename(r.storagePath).baseLower === rowFn.baseLower,
     );

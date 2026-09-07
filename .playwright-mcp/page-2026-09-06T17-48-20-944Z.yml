@@ -1,0 +1,5 @@
+- generic [ref=e3]:
+  - heading "ClinAnnotate" [level=1] [ref=e4]
+  - paragraph [ref=e5]:
+    - text: "API status:"
+    - strong [ref=e6]: ok

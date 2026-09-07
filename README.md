@@ -121,17 +121,7 @@ The honest state of every requirement in the brief.
 
 ## Architecture
 
-```mermaid
-flowchart LR
-    UI["Vue 3 SPA"] -- "REST /api/v1" --> API
-    subgraph API["Express 5, one module per bounded context"]
-      direction TB
-      ING[ingestion] --- TRX[transcription] --- ANN[annotation]
-      AUD[audio-analysis] --- WQ[work-queue] --- EXP[export]
-    end
-    API --> DB[("PostgreSQL via Prisma")]
-    API --> FS[("Local disk or MinIO")]
-```
+![System architecture: Vue 3 SPA communicates via REST with Express 5, which contains six bounded contexts backed by PostgreSQL and local disk or MinIO](docs/images/modular_architecture.png)
 
 The API follows Domain-Driven Design. Each bounded context above is internally structured in four layers — domain, application, infrastructure, presentation — with dependencies that only ever point inward:
 

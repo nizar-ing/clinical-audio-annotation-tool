@@ -2,6 +2,8 @@
 
 A gold standard annotation workbench for German clinical dictation.
 
+The name carries two readings: spoken aloud it sounds like *clean annotate*; written down it puts the clinical context front and centre.
+
 Doctors dictate operation reports, and a speech model produces a first pass transcript. ClinAnnotate is the tool a human annotator uses, all day, to correct that transcript and enrich it with structured spans, so the result can be used both to measure the model and to fine tune it.
 
 [![Node](https://img.shields.io/badge/node-22.x-339933?logo=node.js&logoColor=white)](https://nodejs.org)

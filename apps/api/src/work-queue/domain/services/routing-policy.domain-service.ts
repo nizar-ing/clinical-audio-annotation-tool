@@ -1,7 +1,5 @@
-import type { RecordingStatus } from '../value-objects/recording-status.vo.js';
-
 export class RoutingPolicyDomainService {
-  static routeByDuration(durationSeconds: number): Extract<RecordingStatus, 'UPLOADED' | 'REJECTED_TOO_SHORT'> {
+  static routeByDuration(durationSeconds: number): 'UPLOADED' | 'REJECTED_TOO_SHORT' {
     // Raw float — no rounding; the brief requires the comparison to be exact
     return durationSeconds <= 15.0 ? 'REJECTED_TOO_SHORT' : 'UPLOADED';
   }

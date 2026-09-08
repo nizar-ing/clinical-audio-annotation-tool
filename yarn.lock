@@ -1781,6 +1781,7 @@ __metadata:
     "@types/node": "npm:^22.20.1"
     "@types/pg": "npm:^8"
     "@types/supertest": "npm:^7.2.1"
+    contracts: "workspace:*"
     dependency-cruiser: "npm:^18.2.0"
     dotenv: "npm:^16.0.0"
     express: "npm:^5.2.1"
@@ -2122,12 +2123,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"contracts@workspace:packages/contracts":
+"contracts@workspace:*, contracts@workspace:packages/contracts":
   version: 0.0.0-use.local
   resolution: "contracts@workspace:packages/contracts"
   dependencies:
     vite: "npm:^8.2.2"
     vitest: "npm:^5.0.0"
+    zod: "npm:^4.5.4"
   languageName: unknown
   linkType: soft
 
@@ -5244,6 +5246,7 @@ __metadata:
   resolution: "web@workspace:apps/web"
   dependencies:
     "@vitejs/plugin-vue": "npm:^6.0.8"
+    contracts: "workspace:*"
     typescript: "npm:^6.0.3"
     vite: "npm:^8.2.2"
     vitest: "npm:^5.0.0"

@@ -1,4 +1,4 @@
 declare module 'ffprobe-static' {
-  const path: string;
-  export default path;
+  const info: { path: string };
+  export default info;
 }

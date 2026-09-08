@@ -1,7 +1,10 @@
 import { execFile } from 'child_process';
 import { promisify } from 'util';
 import { join } from 'path';
-import ffprobePath from 'ffprobe-static';
+import ffprobeStatic from 'ffprobe-static';
+
+// ffprobe-static@3.x exports { path } rather than a bare string.
+const ffprobePath = ffprobeStatic.path;
 import { env } from '../../shared/infrastructure/config/env.js';
 import type { AudioMetadata, AudioProbePort } from '../application/ports/audio-probe.port.js';
 

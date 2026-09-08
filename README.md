@@ -13,9 +13,25 @@ Doctors dictate operation reports, and a speech model produces a first pass tran
 
 ---
 
+## Overview
+
+ClinAnnotate is **not** a speech-to-text system. It sits at the annotation stage — after the AI model has already produced a first-pass transcript. The annotator's job is to correct that transcript and enrich it with typed spans. The five stages below are the entire application:
+
+![End-to-end pipeline: from a doctor's raw audio recording and the AI-generated transcript through ingest, filename pairing, work-queue routing, the annotator workspace, and JSONL gold-standard export](docs/images/From_raw_audio_to_a_gold-standard_dataset.png)
+
+| Stage | What happens |
+|---|---|
+| **Ingest & pairing** | Audio files and an AI transcript JSON array are imported as two independent datasets, then reconciled by filename. Unmatched items in either direction are surfaced — nothing is dropped silently. |
+| **Work queue & routing** | Duration is read server-side from each file. Recordings of 15 seconds or less are automatically rejected and stored with a terminal status. The rest enter a filterable, sortable queue. |
+| **Annotator workspace** | The annotator listens, edits the corrected transcript copy, and selects spans to tag. The original AI transcript is immutable — it is the baseline for word error rate computation. |
+| **Recording conditions** | Duration, sample rate, speech rate and microphone-distance estimate are captured per item and are overridable before export. |
+| **Gold-standard export** | One JSONL line per completed item: both transcripts, WER, every span with typed attributes, and the recording conditions. |
+
+---
+
 ## Contents
 
-[Quick start](#quick-start) | [Demo path](#demo-path) | [Requirements coverage](#requirements-coverage) | [Architecture](#architecture) | [Stack](#stack) | [Using the tool](#using-the-tool) | [Keyboard shortcuts](#keyboard-shortcuts) | [Tests](#tests) | [Project structure](#project-structure) | [API](#api) | [Export format](#export-format) | [Decisions](#decisions-and-ambiguity-resolutions) | [Limitations](#known-limitations)
+[Overview](#overview) | [Quick start](#quick-start) | [Demo path](#demo-path) | [Requirements coverage](#requirements-coverage) | [Architecture](#architecture) | [Stack](#stack) | [Using the tool](#using-the-tool) | [Keyboard shortcuts](#keyboard-shortcuts) | [Tests](#tests) | [Project structure](#project-structure) | [API](#api) | [Export format](#export-format) | [Decisions](#decisions-and-ambiguity-resolutions) | [Limitations](#known-limitations)
 
 ---
 

@@ -1,6 +1,6 @@
 import { randomUUID } from 'crypto';
 import { AudioFormat } from '../../../domain/value-objects/audio-format.vo.js';
-import { RoutingPolicyDomainService } from '../../../../../work-queue/domain/services/routing-policy.domain-service.js';
+import { RoutingPolicyDomainService } from '../../../../work-queue/domain/services/routing-policy.domain-service.js';
 import type { RecordingRepositoryPort } from '../../ports/recording.repository.port.js';
 import type { AudioStoragePort } from '../../ports/audio-storage.port.js';
 import type { AudioProbePort } from '../../ports/audio-probe.port.js';

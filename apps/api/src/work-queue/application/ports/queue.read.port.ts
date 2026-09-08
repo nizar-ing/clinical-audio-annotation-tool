@@ -4,6 +4,7 @@ import type { ListQueueQuery } from '../queries/list-queue.query.js';
 export interface QueueItem {
   id: string;
   originalFilename: string;
+  storageKey: string;
   status: RecordingStatus;
   durationSeconds: number;
   annotator: string;

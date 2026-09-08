@@ -49,6 +49,7 @@ export class PrismaQueueReadModel implements QueueReadPort {
     const items: QueueItem[] = rows.map((r) => ({
       id: r.id,
       originalFilename: r.originalFilename,
+      storageKey: r.storageKey,
       status: r.status as RecordingStatus,
       durationSeconds: r.durationSeconds,
       annotator: r.annotator,

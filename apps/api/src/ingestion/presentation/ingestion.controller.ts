@@ -2,6 +2,7 @@ import { Router } from 'express';
 import multer from 'multer';
 import { asyncHandler } from '../../shared/infrastructure/http/async-handler.js';
 import { ok, okList } from '../../shared/infrastructure/http/response-envelope.js';
+import { NotFoundException } from '../../shared/domain/exceptions/application.exception.js';
 import type { UploadRecordingsHandler } from '../application/use-cases/upload-recordings/upload-recordings.handler.js';
 import type { ImportTranscriptsHandler } from '../application/use-cases/import-transcripts/import-transcripts.handler.js';
 import type { PairImportRowHandler } from '../application/use-cases/pair-import-row/pair-import-row.handler.js';
@@ -59,6 +60,29 @@ export function createIngestionRouter(deps: IngestionDeps): Router {
         })),
         list.length,
       );
+    }),
+  );
+
+  router.get(
+    '/recordings/:id',
+    asyncHandler(async (req, res) => {
+      const recording = await deps.recordings.findById(String(req.params['id']));
+      if (!recording) throw new NotFoundException(`Recording ${req.params['id']} not found`);
+      ok(res, {
+        id: recording.id,
+        originalFilename: recording.originalFilename,
+        storageKey: recording.storageKey,
+        status: recording.status,
+        durationSeconds: recording.durationSeconds,
+        mimeType: recording.mimeType,
+        sizeBytes: recording.sizeBytes,
+        sampleRate: recording.sampleRate,
+        channels: recording.channels,
+        bitDepth: recording.bitDepth,
+        headerMetadata: recording.headerMetadata,
+        annotator: recording.annotator,
+        createdAt: recording.createdAt,
+      });
     }),
   );
 

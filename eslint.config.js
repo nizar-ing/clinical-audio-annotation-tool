@@ -33,4 +33,12 @@ export default tseslint.config(
       },
     },
   },
+  {
+    // shared/ui components follow the design system naming (Button, Badge, Toast, Modal, Field)
+    // which are deliberately single-word; the multi-word rule does not apply here.
+    files: ['**/shared/ui/**/*.vue'],
+    rules: {
+      'vue/multi-word-component-names': 'off',
+    },
+  },
 );

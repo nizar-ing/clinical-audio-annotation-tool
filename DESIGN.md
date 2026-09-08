@@ -68,6 +68,8 @@ The last row deserves a direct defence. I have built the full tactical pattern b
 | yarn or bun | Yarn 4 workspaces | api, web, contracts |
 | Docker Compose | Docker Compose | Postgres healthcheck ensures readiness before migrations run |
 
+**Upload size limits.** The brief requires an enforced size limit; the code caps per-file audio at 100 MB via `multer.limits.fileSize` and raises the transcript-import JSON body cap to 5 MB from Express's 100 KB default. Both are enforced at the middleware layer, before disk write, and return 413 with the standard error envelope. Limits chosen so a 30-minute WAV clip at 16-bit / 16 kHz mono still fits (≈ 55 MB), and a transcript array of a few thousand rows still fits — while keeping request memory bounded, since multer buffers uploads in memory to keep the single-machine setup simple.
+
 **Express 5.** The brief specifies Express without pinning a version. Express 5 is the current stable release. The main practical difference from Express 4 in this codebase is that unhandled promise rejections in route handlers propagate to the error middleware automatically, keeping route code cleaner. There are no breaking changes that affect this project.
 
 **NestJS vs bare Express.** NestJS runs on the Express adapter, so it arguably satisfies the letter of the brief, and it would supply the dependency injection container, module boundaries and exception filters this architecture wants. I kept bare Express because an architecture that only holds together while a framework enforces it has not really been demonstrated. The composition root is hand-written in `src/main/container.ts`, and a dependency-cruiser rule inside `yarn test` asserts that no file under any `*/domain/` folder imports Express, Prisma, Zod or a Node built-in. A reviewer verifies the architectural claim by running the tests — a stronger argument than any README paragraph.
@@ -98,13 +100,15 @@ WhisperX, the Montreal Forced Aligner and wav2vec2 forced alignment all violate 
 
 **Recordings of 15 seconds or less are stored, not discarded.** The brief says rejected, not deleted. These recordings are persisted with status `REJECTED_TOO_SHORT` and remain visible in the queue behind a filter. The comparison uses the raw float from ffprobe with no rounding, and is tested at 14.999, 15.000 and 15.001 seconds.
 
-**"Annotator" against "no user management."** Section 4.2 requires an annotator column; section 5 forbids authentication, users and roles. The annotator field is a plain editable string on `Recording`, defaulting to `annotator-1`. If multi-annotator work were ever in scope, that becomes a foreign key and a claim mechanism — the next increment, not this one.
+**"Annotator" against "no user management."** Section 4.2 requires an annotator column; section 5 forbids authentication, users and roles. The annotator field is a plain editable string on `Recording`, defaulting to empty. Since the assumption is one annotator on one machine, a bootstrap value like `annotator-1` would be a stand-in name, not real information — empty renders in the queue as *unassigned* and prompts the annotator to identify themselves. If multi-annotator work were ever in scope, that becomes a foreign key and a claim mechanism — the next increment, not this one.
 
 **Filename pairing is a specified ladder, not a heuristic.** The brief's own example pairs the path `audio/880_NTX.wav` against a file named `880_NTX.wav`, so exact path equality matches nothing at all. The ladder tries: exact path, then basename, then basename case-insensitively, then stem without extension. Two uploads sharing a basename are flagged as ambiguous — neither is paired automatically, because guessing there would silently corrupt a training set. Every rung has a test.
 
 **`IE` and `mmHg` are never converted.** International units measure substance-specific potency with no fixed mass equivalent. There is no second pressure unit in scope for `mmHg`. `Ch` normalises to millimetres at one third of a millimetre per Charrière, alongside `mm` and `cm`.
 
 **Bit depth is null for MP3 and M4A.** The panel renders "not applicable for compressed formats" rather than a zero. `bext` and `LIST INFO` are RIFF chunks; they appear in WAV files only.
+
+**File-type validation reads magic bytes, not the client-supplied MIME.** The brief requires validation but does not prescribe how. Browsers derive the multipart `Content-Type` from the file extension the user picked, which is not a validation — a `.exe` renamed to `.wav` uploads happily. `AudioFormat.fromMagicBytes` inspects the first twelve bytes for `RIFF`/`WAVE` (WAV), ID3v2 or an MPEG sync word (MP3), or `ftyp` (M4A). Anything else fails with `UnsupportedFormatException`, reported per-file in the 207 response so a spoofed upload in a batch does not sink the good rows. The accepted-format list is thus decoupled from whatever MIME string the browser happened to send.
 
 ## 5. What was cut, and what comes next
 

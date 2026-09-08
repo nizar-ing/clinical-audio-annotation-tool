@@ -5,7 +5,9 @@ import { errorHandler } from '../shared/infrastructure/http/error-handler.middle
 
 export function createApp() {
   const app = express();
-  app.use(express.json());
+  // Raised from body-parser's 100 KB default: transcript imports may carry a few thousand
+  // {path,label} rows. Kept well below the audio limit so a mis-directed audio POST fails fast.
+  app.use(express.json({ limit: '5mb' }));
 
   app.get('/api/v1/health', (_req, res) => {
     res.json({ data: { status: 'ok' } });

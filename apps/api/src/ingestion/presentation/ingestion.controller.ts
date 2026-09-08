@@ -9,7 +9,13 @@ import type { UnpairImportRowHandler } from '../application/use-cases/unpair-imp
 import type { RecordingRepositoryPort } from '../application/ports/recording.repository.port.js';
 import type { ImportRowRepositoryPort } from '../application/ports/import-row.repository.port.js';
 
-const upload = multer({ storage: multer.memoryStorage() });
+// 100 MB per audio file: a 30-minute WAV at 16-bit / 16 kHz mono is ~55 MB, so this fits with margin
+// while bounding memory since multer buffers uploads in memory (single-machine setup, per DESIGN §3).
+const AUDIO_MAX_BYTES = 100 * 1024 * 1024;
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: AUDIO_MAX_BYTES },
+});
 
 interface IngestionDeps {
   uploadHandler: UploadRecordingsHandler;

@@ -35,8 +35,25 @@ const TYPES: TypeOption[] = [
 
 const chosenType = ref<SpanType | null>(null);
 
-// Reset when the anchor rect changes (e.g. new selection)
-watch(() => props.anchorRect, () => { chosenType.value = null; });
+// Freeze the anchor position once a form type is chosen. Focusing form inputs
+// (type=text, select, number) triggers selectionchange in the browser, which
+// clears the correctedEl selection and propagates to anchorRect = null —
+// collapsing the popover mid-fill. By freezing here and only unfreezing on
+// explicit submit/cancel, we prevent that race.
+const frozenAnchorRect = ref<DOMRect | null>(null);
+const frozenAnchorText = ref('');
+
+watch(
+  () => props.anchorRect,
+  (rect) => { if (chosenType.value === null) frozenAnchorRect.value = rect; },
+  { immediate: true },
+);
+
+watch(
+  () => props.anchorText,
+  (text) => { if (chosenType.value === null) frozenAnchorText.value = text; },
+  { immediate: true },
+);
 
 const formComponent = computed<Component | null>(() => {
   switch (chosenType.value) {
@@ -51,18 +68,29 @@ const formComponent = computed<Component | null>(() => {
 });
 
 const style = computed(() => {
-  if (!props.anchorRect) return { display: 'none' };
-  // Position below the selection; clamp to viewport.
-  const top = props.anchorRect.bottom + 8 + window.scrollY;
+  if (!frozenAnchorRect.value) return { display: 'none' };
+  const top = frozenAnchorRect.value.bottom + 8 + window.scrollY;
   const left = Math.min(
-    props.anchorRect.left + window.scrollX,
+    frozenAnchorRect.value.left + window.scrollX,
     window.innerWidth - 320,
   );
   return { top: `${top}px`, left: `${Math.max(8, left)}px` };
 });
 
+function handleSubmit(attrs: SpanAttributes) {
+  frozenAnchorRect.value = null;
+  chosenType.value = null;
+  emit('submit', attrs);
+}
+
+function handleCancel() {
+  frozenAnchorRect.value = null;
+  chosenType.value = null;
+  emit('cancel');
+}
+
 function onKeydown(event: KeyboardEvent) {
-  if (event.key === 'Escape') { emit('cancel'); return; }
+  if (event.key === 'Escape') { handleCancel(); return; }
   if (chosenType.value !== null) return; // digit hotkeys only when picking type
   const match = TYPES.find((t) => t.hotkey === event.key);
   if (match) {
@@ -75,7 +103,7 @@ function onKeydown(event: KeyboardEvent) {
 <template>
   <Teleport to="body">
     <div
-      v-if="anchorRect"
+      v-if="frozenAnchorRect"
       class="fixed z-50"
       :style="style"
       role="dialog"
@@ -86,7 +114,7 @@ function onKeydown(event: KeyboardEvent) {
       <div class="bg-white rounded-xl shadow-2xl border border-warm-200 w-80 p-4">
         <p class="font-sans text-xs font-semibold uppercase tracking-widest text-warm-400 m-0 mb-3">
           Annotate
-          <span class="font-mono normal-case tracking-normal text-warm-700 ml-1">"{{ anchorText }}"</span>
+          <span class="font-mono normal-case tracking-normal text-warm-700 ml-1">"{{ frozenAnchorText }}"</span>
         </p>
 
         <div
@@ -114,8 +142,8 @@ function onKeydown(event: KeyboardEvent) {
         <component
           :is="formComponent"
           v-if="chosenType && formComponent"
-          @submit="(attrs: SpanAttributes) => emit('submit', attrs)"
-          @cancel="emit('cancel')"
+          @submit="handleSubmit"
+          @cancel="handleCancel"
         />
       </div>
     </div>

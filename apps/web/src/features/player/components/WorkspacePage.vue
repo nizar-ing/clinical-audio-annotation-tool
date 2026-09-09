@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue';
+import { ref, watch, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { ArrowLeft, FileAudio, Clock, Activity, Headphones } from 'lucide-vue-next';
 import AudioPlayer from './AudioPlayer.vue';
@@ -44,7 +44,14 @@ function seekAudio(time: number) {
 const editor = useTranscriptEdit();
 const spans = ref<SpanDto[]>([]);
 const currentSelection = ref<TextSelection | null>(null);
+// Preserve the last non-null selection so onSubmitSpan can access offsets even
+// after the correctedEl selection is cleared by focusing a form input.
+const selectionSnapshot = ref<TextSelection | null>(null);
 const spansError = ref<string | null>(null);
+
+watch(currentSelection, (sel) => {
+  if (sel !== null) selectionSnapshot.value = sel;
+});
 
 async function reloadSpans() {
   try {
@@ -73,17 +80,19 @@ onMounted(async () => {
 
 function clearSelection() {
   currentSelection.value = null;
+  selectionSnapshot.value = null;
   window.getSelection()?.removeAllRanges();
 }
 
 async function onSubmitSpan(attributes: SpanAttributes) {
-  if (!currentSelection.value) return;
+  const sel = selectionSnapshot.value;
+  if (!sel) return;
   try {
     await createSpan(props.id, {
       spanType: attributes.spanType,
-      startOffset: currentSelection.value.startOffset,
-      endOffset: currentSelection.value.endOffset,
-      anchorText: currentSelection.value.anchorText,
+      startOffset: sel.startOffset,
+      endOffset: sel.endOffset,
+      anchorText: sel.anchorText,
       attributes,
     });
     clearSelection();

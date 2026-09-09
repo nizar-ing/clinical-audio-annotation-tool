@@ -4,7 +4,15 @@ import { useRouter } from 'vue-router';
 import { ArrowLeft, FileAudio, Clock, Activity, Headphones } from 'lucide-vue-next';
 import AudioPlayer from './AudioPlayer.vue';
 import Badge from '../../../shared/ui/Badge.vue';
-import { getRecording, updateQueueStatus } from '../../work-queue/api/queue.api.js';
+import TranscriptView from '../../transcript-editor/components/TranscriptView.vue';
+import SpanPopover from '../../annotation/components/SpanPopover.vue';
+import ConditionsPanel from '../../recording-conditions/components/ConditionsPanel.vue';
+import { useTranscriptEdit } from '../../transcript-editor/composables/useTranscriptEdit.js';
+import type { TextSelection } from '../../transcript-editor/composables/useSpanSelection.js';
+import { listSpans, createSpan } from '../../annotation/api/annotation.api.js';
+import type { SpanDto } from '../../annotation/api/annotation.api.js';
+import type { SpanAttributes } from 'contracts';
+import { getRecording, updateQueueStatus, listQueue } from '../../work-queue/api/queue.api.js';
 import type { QueueItem, RecordingStatus } from '../../work-queue/api/queue.api.js';
 
 const props = defineProps<{ id: string }>();
@@ -28,28 +36,77 @@ const audioUrl = computed(() =>
   recording.value ? `/uploads/${recording.value.storageKey}` : '',
 );
 
+const audioPlayerRef = ref<InstanceType<typeof AudioPlayer> | null>(null);
+function seekAudio(time: number) {
+  audioPlayerRef.value?.seek(time);
+}
+
+const editor = useTranscriptEdit();
+const spans = ref<SpanDto[]>([]);
+const currentSelection = ref<TextSelection | null>(null);
+const spansError = ref<string | null>(null);
+
+async function reloadSpans() {
+  try {
+    const res = await listSpans(props.id);
+    spans.value = res.data;
+  } catch (e) {
+    spansError.value = e instanceof Error ? e.message : 'Failed to load spans';
+  }
+}
+
 onMounted(async () => {
   try {
     const res = await getRecording(props.id);
     recording.value = res.data as FullRecording;
 
-    // Transition QUEUED → IN_PROGRESS when the annotator opens the workspace
     if (recording.value.status === 'QUEUED') {
       const updated = await updateQueueStatus(props.id, 'IN_PROGRESS');
       recording.value = { ...recording.value, status: updated.data.status };
     }
+
+    await Promise.all([editor.load(props.id), reloadSpans()]);
   } catch (e) {
     loadError.value = e instanceof Error ? e.message : 'Failed to load recording';
   }
 });
 
-async function markComplete() {
+function clearSelection() {
+  currentSelection.value = null;
+  window.getSelection()?.removeAllRanges();
+}
+
+async function onSubmitSpan(attributes: SpanAttributes) {
+  if (!currentSelection.value) return;
+  try {
+    await createSpan(props.id, {
+      spanType: attributes.spanType,
+      startOffset: currentSelection.value.startOffset,
+      endOffset: currentSelection.value.endOffset,
+      anchorText: currentSelection.value.anchorText,
+      attributes,
+    });
+    clearSelection();
+    await reloadSpans();
+  } catch (e) {
+    spansError.value = e instanceof Error ? e.message : 'Failed to save span';
+  }
+}
+
+async function markCompleteAndNext() {
   if (!recording.value) return;
   completing.value = true;
   statusError.value = null;
   try {
+    await editor.saveNow();
     await updateQueueStatus(props.id, 'DONE');
-    router.push('/queue');
+    // Find the next QUEUED recording after this one; falls back to the queue index.
+    const queue = await listQueue({ status: 'QUEUED', sort: 'oldest', limit: 1 });
+    if (queue.data.length > 0 && queue.data[0]!.id !== props.id) {
+      router.push(`/annotate/${queue.data[0]!.id}`);
+    } else {
+      router.push('/queue');
+    }
   } catch (e) {
     statusError.value = e instanceof Error ? e.message : 'Failed to update status';
     completing.value = false;
@@ -61,10 +118,12 @@ function formatDuration(seconds: number): string {
   const s = Math.floor(seconds % 60);
   return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
 }
+
+const werPercent = computed(() => `${(editor.wer.value * 100).toFixed(1)}%`);
 </script>
 
 <template>
-  <main class="card-container max-w-5xl mx-auto px-6 py-8 my-8">
+  <main class="card-container max-w-6xl mx-auto px-6 py-8 my-8">
     <div
       v-if="loadError"
       class="bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-3 text-sm font-sans mb-6"
@@ -96,6 +155,13 @@ function formatDuration(seconds: number): string {
             </h1>
           </span>
           <Badge :status="recording.status as RecordingStatus" />
+          <span
+            v-if="editor.transcript.value"
+            class="ml-auto font-sans text-xs text-warm-500"
+            title="Word Error Rate — corrected vs original"
+          >
+            WER · <span class="font-mono text-warm-700">{{ werPercent }}</span>
+          </span>
         </div>
 
         <div class="flex gap-5 font-sans text-sm text-clin-600">
@@ -127,29 +193,60 @@ function formatDuration(seconds: number): string {
       </div>
 
       <section class="mb-5">
-        <AudioPlayer :audio-url="audioUrl" />
+        <AudioPlayer
+          ref="audioPlayerRef"
+          :audio-url="audioUrl"
+          :on-save-now="editor.saveNow"
+          :on-complete-and-next="markCompleteAndNext"
+        />
       </section>
 
-      <section class="grid grid-cols-2 gap-4 mb-6">
-        <div class="bg-white rounded-lg border border-warm-200 shadow-sm p-4 min-h-40">
-          <p class="font-sans text-xs font-semibold uppercase tracking-widest text-warm-400 m-0 mb-3">
-            Original AI transcript
-          </p>
-          <p class="font-sans text-sm text-warm-300 m-0">
-            Transcript editor available in the next phase.
-          </p>
-        </div>
-        <div class="bg-white rounded-lg border border-warm-200 shadow-sm p-4 min-h-40">
-          <p class="font-sans text-xs font-semibold uppercase tracking-widest text-warm-400 m-0 mb-3">
-            Corrected transcript &amp; annotations
-          </p>
-          <p class="font-sans text-sm text-warm-300 m-0">
-            Transcript editor available in the next phase.
-          </p>
-        </div>
-      </section>
+      <p
+        v-if="editor.error.value"
+        class="bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-2 text-xs font-sans mb-4"
+      >
+        Transcript · {{ editor.error.value }}
+      </p>
 
-      <footer class="flex justify-end items-center gap-3 pt-4 border-t border-warm-200">
+      <TranscriptView
+        v-if="editor.transcript.value"
+        :original-text="editor.transcript.value.originalText"
+        :corrected-text="editor.correctedDraft.value"
+        :word-timings="editor.transcript.value.wordTimings"
+        :alignment-method="editor.transcript.value.alignmentMethod"
+        :spans="spans"
+        :saving="editor.saving.value"
+        :last-saved-at="editor.lastSavedAt.value"
+        @update:corrected="editor.setCorrected"
+        @word-click="seekAudio"
+        @selection="(sel) => currentSelection = sel"
+        @selection-cleared="currentSelection = null"
+      />
+
+      <p
+        v-else-if="editor.loading.value"
+        class="font-sans text-sm text-warm-400 py-8 text-center"
+      >
+        Loading transcript…
+      </p>
+
+      <p
+        v-if="spansError"
+        class="bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-2 text-xs font-sans mb-4"
+      >
+        Annotations · {{ spansError }}
+      </p>
+
+      <ConditionsPanel :recording-id="props.id" />
+
+      <SpanPopover
+        :anchor-rect="currentSelection?.rect ?? null"
+        :anchor-text="currentSelection?.anchorText ?? ''"
+        @submit="onSubmitSpan"
+        @cancel="clearSelection"
+      />
+
+      <footer class="flex justify-end items-center gap-3 pt-4 mt-6 border-t border-warm-200">
         <p
           v-if="statusError"
           class="font-sans text-sm text-red-600 m-0"
@@ -159,9 +256,9 @@ function formatDuration(seconds: number): string {
         <button
           class="bg-sage-500 hover:bg-sage-600 text-white font-sans font-medium text-sm px-5 py-2 rounded-lg transition-colors border-0 cursor-pointer disabled:bg-warm-300 disabled:cursor-not-allowed"
           :disabled="completing || recording.status === 'DONE'"
-          @click="markComplete"
+          @click="markCompleteAndNext"
         >
-          {{ completing ? 'Saving…' : 'Mark Complete' }}
+          {{ completing ? 'Saving…' : 'Complete & next' }}
         </button>
       </footer>
     </template>

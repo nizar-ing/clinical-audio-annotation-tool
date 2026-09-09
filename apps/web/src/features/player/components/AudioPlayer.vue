@@ -5,7 +5,11 @@ import { useAudioPlayer } from '../composables/useAudioPlayer.js';
 import { useKeyboardShortcuts } from '../composables/useKeyboardShortcuts.js';
 import ShortcutsOverlay from './ShortcutsOverlay.vue';
 
-defineProps<{ audioUrl: string }>();
+const props = defineProps<{
+  audioUrl: string;
+  onSaveNow?: () => void;
+  onCompleteAndNext?: () => void;
+}>();
 
 const audioEl = ref<HTMLAudioElement | null>(null);
 const overlayVisible = ref(false);
@@ -13,7 +17,11 @@ const shortcutsEnabled = ref(true);
 
 const SPEED_STEPS = [0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0];
 
-const { currentTime, duration, playing, speed, toggle, skip, setSpeed } = useAudioPlayer(audioEl);
+const { currentTime, duration, playing, speed, toggle, skip, setSpeed, seek } = useAudioPlayer(audioEl);
+
+// Word-click seek from the transcript editor calls this method through a template ref.
+// Keeping the audio element ownership inside AudioPlayer avoids provide/inject ceremony.
+defineExpose({ seek });
 
 useKeyboardShortcuts({
   enabled: shortcutsEnabled,
@@ -29,6 +37,8 @@ useKeyboardShortcuts({
     if (idx < SPEED_STEPS.length - 1) setSpeed(SPEED_STEPS[idx + 1]!);
   },
   onToggleOverlay: () => { overlayVisible.value = !overlayVisible.value; },
+  onSaveNow: () => props.onSaveNow?.(),
+  onCompleteAndNext: () => props.onCompleteAndNext?.(),
 });
 
 const progress = computed(() => (duration.value > 0 ? currentTime.value / duration.value : 0));

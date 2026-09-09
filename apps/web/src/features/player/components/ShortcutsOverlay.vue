@@ -4,12 +4,15 @@ defineProps<{ visible: boolean }>();
 const emit = defineEmits<{ close: [] }>();
 
 const shortcuts = [
-  { keys: 'Space',     action: 'Play / Pause' },
-  { keys: '← / J',    action: 'Skip back 5 s' },
-  { keys: '→ / L',    action: 'Skip forward 5 s' },
-  { keys: ', / [',    action: 'Speed −0.25×' },
-  { keys: '. / ]',    action: 'Speed +0.25×' },
-  { keys: '?',        action: 'Toggle this overlay' },
+  { keys: 'Space',      action: 'Play / Pause' },
+  { keys: '← / J',     action: 'Skip back 5 s' },
+  { keys: '→ / L',     action: 'Skip forward 5 s' },
+  { keys: ', / [',     action: 'Speed −0.25×' },
+  { keys: '. / ]',     action: 'Speed +0.25×' },
+  { keys: '?',         action: 'Toggle this overlay' },
+  { keys: 'T',         action: 'Open span type picker' },
+  { keys: 'Ctrl + S',  action: 'Save transcript now' },
+  { keys: 'Ctrl + ↵',  action: 'Complete & go to next' },
 ];
 </script>
 

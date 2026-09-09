@@ -114,10 +114,10 @@ The honest state of every requirement in the brief.
 | **Audio player** | | |
 | Play and pause, seek, speed, jump backward and forward | Done | |
 | Keyboard shortcuts, documented in the app | Done | Behind `?`, and in the table below |
-| Click a word to seek | Partial | Alignment logic is ready; the workspace UI is phase 6. Timings are estimated — method in [`DESIGN.md`](./DESIGN.md), section 4 |
+| Click a word to seek | Done | Timings are estimated — method in [`DESIGN.md`](./DESIGN.md), section 4 |
 | **Transcript** | | |
 | Immutable original | Done | `BEFORE UPDATE` trigger on `Transcript`; no code path can overwrite `originalText` |
-| Editable corrected copy and diff view | Planned (phase 6) | Workspace editor and diff panel not yet built |
+| Editable corrected copy and diff view | Done | Dual pane, token-level LCS diff, 750 ms debounced autosave |
 | **Annotation** | | |
 | `MEDICAL_TERM`, `MEASUREMENT`, `NUMBER`, `FORMATTING_COMMAND`, `NAMED_ENTITY` | Done | |
 | `SPELLED_OUT` | Partial | Ships without spelling alphabet detection. The annotator types the resolved word |
@@ -130,9 +130,9 @@ The honest state of every requirement in the brief.
 | Distance estimate, overridable | Done | RMS to noise floor heuristic, labelled as an estimate everywhere |
 | Override precedence is correct | Done | Tested: `final` equals the override when set, the derived value otherwise |
 | **Export** | | |
-| JSONL with the audio reference, both transcripts, spans, attributes and conditions | Planned (phase 6) | Schema justified in [`DESIGN.md`](./DESIGN.md), section 1 |
+| JSONL with the audio reference, both transcripts, spans, attributes and conditions | Done | Streaming NDJSON, one line per DONE recording — see [Export format](#export-format) |
 | **Beyond the brief** | | |
-| Word error rate, original against corrected | Done | Computed and cached per item; surfaced in the queue. Corpus aggregate is part of the phase 6 export |
+| Word error rate, original against corrected | Done | Computed and cached per item; surfaced in the queue and included in the export |
 | Architecture test: the domain layer imports no framework | Done | A dependency cruiser rule, run by `yarn test` |
 | **Out of scope** | | |
 | Undo and redo across span operations | Out of scope | Native text undo only. See [`DESIGN.md`](./DESIGN.md), section 5 |
@@ -194,16 +194,16 @@ Also available in the app behind `?`.
 | `. / ]` | Increase playback speed by 0.25× |
 | `?` | Toggle this overlay |
 
-**Annotation workspace** (phase 6):
+**Annotation workspace:**
 
 | Key | Action |
 |---|---|
 | `1` to `6` | Tag the selection: medical term, measurement, number, formatting command, named entity, spelled out |
-| `Enter` | Confirm the annotation popover |
+| `T` | Open span type picker |
 | `Esc` | Cancel, or close the popover |
-| `Ctrl/Cmd+Z` | Undo a text edit |
-| `Ctrl/Cmd+S` | Force a save |
-| `N` and `P` | Next or previous queue item |
+| `Ctrl/Cmd+Z` | Undo a text edit (native browser undo inside the corrected pane) |
+| `Ctrl/Cmd+S` | Save transcript now |
+| `Ctrl/Cmd+Enter` | Complete and navigate to the next queued item |
 | Click a word | Seek to that word's estimated timestamp |
 
 ## Tests
@@ -220,9 +220,9 @@ Effort is concentrated where a bug would actually hurt:
 - Pairing ladder. Every rung, plus duplicate paths, unmatched audio, unmatched rows and the ambiguous basename case.
 - Unit normalisation. Every unit in the brief, including the two that must not be converted.
 - Span persistence. Create, update and delete round trips, and re-anchoring after the transcript is edited underneath a span.
-- Original transcript immutability (phase 6). A direct `UPDATE` will be attempted and asserted to fail at the database. The trigger is in place; the integration test is pending.
+- Original transcript immutability. A direct `UPDATE` is attempted and asserted to fail at the database trigger level. An integration test covers this as part of the transcript use-case suite.
 - Override precedence. `final` equals the override when one is set, and the derived value when not. Easy to get backwards, and silent when wrong.
-- Export schema (phase 6). A snapshot over a fully populated fixture will double as executable documentation of the output format.
+- Export assembler. Seven unit tests over the `GoldStandardAssembler`, covering provenance flags (`speechRateSource`), empty span lists, and the `distanceMethod` passthrough.
 - Architecture. No domain file imports a framework.
 - Word error rate. Substitution, deletion, insertion, identical strings and an empty reference.
 
@@ -258,8 +258,6 @@ File naming is consistent with the DDD conventions used across this author's oth
 
 Everything sits under `/api/v1`.
 
-**Implemented (phases 0 – 5):**
-
 | Context | Endpoint | Purpose |
 |---|---|---|
 | – | `GET /health` | Server liveness |
@@ -278,49 +276,50 @@ Everything sits under `/api/v1`.
 | audio-analysis | `PATCH /recordings/:id/conditions` | Override speech rate or distance estimate |
 | work-queue | `GET /queue` | Filtered, sorted, and paginated queue view |
 | work-queue | `PATCH /queue/:id/status` | Transition a recording to a new status |
-
-**Planned (phase 6):**
-
-| Context | Endpoint | Purpose |
-|---|---|---|
 | transcription | `GET /recordings/:id/transcript` | Original, corrected, word timings and WER |
+| transcription | `POST /recordings/:id/transcript` | Seed transcript for a recording (paste path) |
 | transcription | `PATCH /recordings/:id/transcript/corrected` | Save edits; returns re-anchoring report |
-| export | `GET /export?status=DONE` | Stream the JSONL gold standard |
+| export | `GET /export` | Stream the JSONL gold standard for all DONE recordings |
 
 Errors are uniform, shaped as `{ "error": { "code", "message", "details" } }`, with 422 for domain rule violations and 409 for illegal status transitions.
 
 ## Export format
 
-One JSON object per line:
+One JSON object per line (`application/x-ndjson`). The filename is `clinannotate-<date>.jsonl`.
 
 ```json
 {
-  "id": "rec_9f1c",
-  "audio": { "path": "audio/880_NTX.wav", "durationSeconds": 42.3, "sampleRate": 48000, "channels": 1, "bitDepth": 16 },
-  "transcript": {
-    "original": "...",
-    "corrected": "...",
-    "wer": { "value": 0.083, "substitutions": 2, "deletions": 1, "insertions": 0, "referenceLength": 36 }
+  "audioFilename": "demo-05.wav",
+  "storageKey": "abc123.wav",
+  "durationSeconds": 42.3,
+  "sampleRate": 16000,
+  "channels": 1,
+  "originalTranscript": "Single-Shot-Antibiose mit Cefuroxim...",
+  "correctedTranscript": "Single-Shot-Antibiose mit Cefuroxim 1500 mg...",
+  "wordErrorRate": 0.083,
+  "alignmentMethod": "energy-gated",
+  "wordTimings": [{ "w": "Single-Shot-Antibiose", "start": 0.0, "end": 0.9 }],
+  "conditions": {
+    "speechRateWpm": 132,
+    "speechRateSource": "derived",
+    "distanceBucket": "normal",
+    "distanceMethod": "RMS-to-noise-floor ratio over 25 ms frames; heuristic, not a calibrated measurement"
   },
-  "annotations": [
-    { "type": "MEDICAL_TERM", "start": 21, "end": 30, "text": "Cefuroxim",
-      "attributes": { "category": "drug", "note": "" } },
-    { "type": "MEASUREMENT", "start": 31, "end": 65, "text": "eintausendfuenfhundert Milligramm",
-      "attributes": { "value": 1500, "unit": "mg", "normalizedValue": 1.5, "normalizedUnit": "g" } }
+  "spans": [
+    {
+      "spanType": "MEASUREMENT",
+      "startOffset": 31,
+      "endOffset": 38,
+      "anchorText": "1500 mg",
+      "attributes": { "spanType": "MEASUREMENT", "value": 1500, "unit": "mg", "normalised": 1.5 },
+      "needsReview": false
+    }
   ],
-  "recordingConditions": {
-    "speechRateWpm": { "derived": 132, "final": 132, "overridden": false },
-    "distanceEstimate": { "derived": "normal", "final": "close", "overridden": true,
-      "method": "RMS-to-noise-floor ratio over 25 ms frames; heuristic, not a calibrated measurement" },
-    "headerMetadata": { "bext": null, "listInfo": { "ISFT": "Zoom H1n" } }
-  },
-  "alignment": { "method": "energy_gated", "confidence": "estimate",
-    "note": "Word times distributed across energy-detected speech regions. Not forced alignment." },
-  "exportedAt": "2026-09-05T12:00:00Z"
+  "exportedAt": "2026-09-09T12:00:00.000Z"
 }
 ```
 
-Every estimated value carries its method inline, so a downstream consumer never has to guess how much confidence a number deserves.
+Every estimated value carries its provenance inline. `speechRateSource` is `"derived"` or `"override"`. `alignmentMethod` is `"energy-gated"` or `"proportional"`, both labelled as estimates in the UI. `distanceMethod` is the full description string.
 
 ## Decisions and ambiguity resolutions
 

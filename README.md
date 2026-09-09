@@ -162,7 +162,8 @@ Express has no dependency injection container, so the composition root is writte
 | Database | PostgreSQL 16, via Docker Compose |
 | Object storage | Local disk by default, with a MinIO adapter behind the same port |
 | Frontend | Vue 3, `<script setup>`, Composition API |
-| Frontend state | Per feature composables, with no store library at this size |
+| Frontend state | Per feature composables, no store library |
+| Styling | Tailwind CSS v4 via `@tailwindcss/vite`; design tokens in a `@theme` block in `main.css`, no `tailwind.config.js` |
 | Audio | `ffprobe-static` for headers, `ffmpeg-static` for PCM decode, and a hand written RIFF reader for `bext` and `LIST INFO` |
 | Validation | Zod, shared between API and web through `packages/contracts` |
 | Testing | Vitest, Supertest, dockerised Postgres, dependency cruiser |

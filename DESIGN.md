@@ -66,6 +66,7 @@ The last row deserves a direct defence. I have built the full tactical pattern b
 | PostgreSQL | PostgreSQL 16 | — |
 | Vue 3, Composition API, `<script setup>` | Vue 3 | applied throughout |
 | — | Vue Router 5 | `IMPLEMENTATION_PLAN.md §4.5` shows an explicit `router/` folder; Vue Router is the canonical routing library for Vue 3. No store library added — per-feature composables are sufficient for one annotator on one machine. |
+| — | Tailwind CSS v4 | CSS-first config via `@tailwindcss/vite`; all tokens declared in a `@theme` block, no `tailwind.config.js`; see below |
 | yarn or bun | Yarn 4 workspaces | api, web, contracts |
 | Docker Compose | Docker Compose | Postgres healthcheck ensures readiness before migrations run |
 

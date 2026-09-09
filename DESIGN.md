@@ -87,6 +87,8 @@ A `BEFORE UPDATE` trigger on `Transcript` enforces `originalText` immutability a
 
 The role advertisement asks for React; the brief mandates Vue 3. I built Vue, as specified. The feature folder structure maps directly onto a React codebase.
 
+**Frontend styling — Tailwind CSS v4 and custom typography.** `tailwindcss` and `@tailwindcss/vite` were added as web devDependencies (explicit user approval; no `tailwind.config.js` in v4 — configuration lives in a CSS `@theme` block). Typography uses Fraunces (optical-size serif, display headings), DM Sans (humanist sans, body copy), and JetBrains Mono (code, filenames, timings) — all via Google Fonts, chosen for clinical legibility and character without the generic Inter/Roboto defaults. The colour palette is semantically mapped to healthcare meaning: sage green for recovery and done states, clinical blue for the audio/silence zone, harvest amber for active/in-progress states, and warm off-white surfaces instead of sterile pure white.
+
 ## 4. Ambiguous requirements, and how they were resolved
 
 **Word-level timestamps have no source.** Section 4.3 requires that clicking a word seeks the audio to that word's timestamp. The supplied transcript format is `{path, label}` — no timings anywhere — and section 5 forbids implementing a speech model. As literally stated, the requirement cannot be satisfied. How you handle that is the actual test.

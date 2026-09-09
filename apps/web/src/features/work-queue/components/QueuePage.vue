@@ -7,14 +7,14 @@ const { items, total, loading, error, statusFilter, sort, setStatusFilter, setSo
 </script>
 
 <template>
-  <main class="queue-page">
-    <div class="queue-page__header">
-      <h1 class="queue-page__title">
+  <main class="max-w-5xl mx-auto px-6 py-8">
+    <div class="flex items-baseline gap-3 mb-5">
+      <h1 class="font-display text-2xl font-semibold text-warm-900 m-0">
         Annotation Queue
       </h1>
       <span
         v-if="!loading"
-        class="queue-page__count"
+        class="font-sans text-sm text-warm-400"
       >
         {{ total }} item{{ total !== 1 ? 's' : '' }}
       </span>
@@ -22,7 +22,7 @@ const { items, total, loading, error, statusFilter, sort, setStatusFilter, setSo
 
     <p
       v-if="error"
-      class="queue-page__error"
+      class="bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-3 text-sm font-sans mb-4"
     >
       {{ error }}
     </p>
@@ -40,35 +40,3 @@ const { items, total, loading, error, statusFilter, sort, setStatusFilter, setSo
     />
   </main>
 </template>
-
-<style scoped>
-.queue-page {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 24px 16px;
-}
-.queue-page__header {
-  display: flex;
-  align-items: baseline;
-  gap: 12px;
-  margin-bottom: 16px;
-}
-.queue-page__title {
-  font-size: 1.25rem;
-  font-weight: 700;
-  margin: 0;
-  color: #111827;
-}
-.queue-page__count {
-  font-size: 0.875rem;
-  color: #6b7280;
-}
-.queue-page__error {
-  color: #dc2626;
-  background: #fee2e2;
-  border-radius: 4px;
-  padding: 8px 12px;
-  font-size: 0.875rem;
-  margin-bottom: 12px;
-}
-</style>

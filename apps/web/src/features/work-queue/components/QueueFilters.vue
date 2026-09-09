@@ -38,31 +38,33 @@ function toggleStatus(status: RecordingStatus) {
 </script>
 
 <template>
-  <div class="queue-filters">
-    <div class="queue-filters__group">
-      <span class="queue-filters__label">Status</span>
+  <div class="flex flex-wrap gap-6 items-center py-4 border-b border-warm-200 mb-4">
+    <div class="flex items-center gap-3 flex-wrap">
+      <span class="font-sans text-xs font-semibold uppercase tracking-widest text-warm-400 mr-1">Status</span>
       <label
         v-for="status in ALL_STATUSES"
         :key="status"
-        class="queue-filters__checkbox"
+        class="flex items-center gap-1.5 font-sans text-sm text-warm-700 cursor-pointer"
       >
         <input
           type="checkbox"
           :checked="props.statusFilter.includes(status)"
+          class="accent-sage-500 cursor-pointer"
           @change="toggleStatus(status)"
         >
         {{ STATUS_LABELS[status] }}
       </label>
     </div>
 
-    <div class="queue-filters__group">
+    <div class="flex items-center gap-2">
       <label
-        class="queue-filters__label"
+        class="font-sans text-xs font-semibold uppercase tracking-widest text-warm-400"
         for="queue-sort"
       >Sort</label>
       <select
         id="queue-sort"
         :value="props.sort"
+        class="font-sans text-sm border border-warm-200 rounded-md px-2 py-1 bg-white text-warm-700 focus:ring-2 focus:ring-sage-300 focus:border-sage-400 outline-none cursor-pointer"
         @change="emit('update:sort', ($event.target as HTMLSelectElement).value as QueueSort)"
       >
         <option
@@ -76,42 +78,3 @@ function toggleStatus(status: RecordingStatus) {
     </div>
   </div>
 </template>
-
-<style scoped>
-.queue-filters {
-  display: flex;
-  gap: 24px;
-  align-items: center;
-  flex-wrap: wrap;
-  padding: 12px 0;
-  border-bottom: 1px solid #e5e7eb;
-  margin-bottom: 12px;
-}
-.queue-filters__group {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.queue-filters__label {
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: #6b7280;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-right: 4px;
-}
-.queue-filters__checkbox {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 0.875rem;
-  cursor: pointer;
-}
-select {
-  font-size: 0.875rem;
-  padding: 4px 8px;
-  border: 1px solid #d1d5db;
-  border-radius: 4px;
-  background: white;
-}
-</style>

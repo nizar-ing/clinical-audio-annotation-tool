@@ -3,12 +3,14 @@ import { RouterLink, RouterView } from 'vue-router';
 </script>
 
 <template>
-  <div class="app">
-    <nav class="app-nav">
-      <span class="app-nav__brand">ClinAnnotate</span>
+  <div class="min-h-screen bg-warm-50">
+    <nav class="flex items-center gap-6 px-6 py-4 bg-gradient-to-r from-sage-50 via-sage-300 to-teal-vivid border-b border-sage-200 shadow-sm">
+      <span class="font-display font-semibold text-sage-800 text-base tracking-tight">
+        ClinAnnotate
+      </span>
       <RouterLink
         to="/queue"
-        class="app-nav__link"
+        class="text-sm font-medium text-sage-700 no-underline transition-colors border-b-2 border-transparent pb-0.5 hover:text-sage-900 hover:border-sage-500 [&.router-link-active]:text-sage-900 [&.router-link-active]:border-sage-600"
       >
         Queue
       </RouterLink>
@@ -16,42 +18,3 @@ import { RouterLink, RouterView } from 'vue-router';
     <RouterView />
   </div>
 </template>
-
-<style>
-*, *::before, *::after { box-sizing: border-box; }
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  color: #111827;
-  background: #ffffff;
-}
-</style>
-
-<style scoped>
-.app {
-  min-height: 100vh;
-}
-.app-nav {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-  padding: 12px 24px;
-  border-bottom: 1px solid #e5e7eb;
-  background: white;
-}
-.app-nav__brand {
-  font-weight: 700;
-  font-size: 1rem;
-  color: #6366f1;
-}
-.app-nav__link {
-  font-size: 0.875rem;
-  color: #374151;
-  text-decoration: none;
-  font-weight: 500;
-}
-.app-nav__link:hover,
-.app-nav__link.router-link-active {
-  color: #6366f1;
-}
-</style>

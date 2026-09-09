@@ -11,30 +11,24 @@ const labels: Record<RecordingStatus, string> = {
   IN_PROGRESS: 'In Progress',
   DONE: 'Done',
 };
+
+const badgeClasses: Record<RecordingStatus, string> = {
+  UPLOADED:           'bg-clin-100 text-clin-700',
+  REJECTED_TOO_SHORT: 'bg-red-100 text-red-700',
+  UNPAIRED:           'bg-harvest-100 text-harvest-600',
+  QUEUED:             'bg-sage-100 text-sage-700',
+  IN_PROGRESS:        'bg-harvest-200 text-harvest-600',
+  DONE:               'bg-sage-200 text-sage-800',
+};
 </script>
 
 <template>
-  <span :class="['badge', `badge--${props.status.toLowerCase().replace(/_/g, '-')}`]">
+  <span
+    :class="[
+      'inline-flex items-center px-2.5 py-0.5 rounded text-xs font-sans font-semibold tracking-wide uppercase',
+      badgeClasses[props.status],
+    ]"
+  >
     {{ labels[props.status] }}
   </span>
 </template>
-
-<style scoped>
-.badge {
-  display: inline-block;
-  padding: 2px 8px;
-  border-radius: 3px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-}
-
-/* Colourblind-safe palette: hue + lightness contrast, not hue alone */
-.badge--uploaded        { background: #e0e7ff; color: #3730a3; }
-.badge--rejected-too-short { background: #fee2e2; color: #991b1b; }
-.badge--unpaired        { background: #fef3c7; color: #92400e; }
-.badge--queued          { background: #dbeafe; color: #1e40af; }
-.badge--in-progress     { background: #fef9c3; color: #78350f; }
-.badge--done            { background: #dcfce7; color: #166534; }
-</style>

@@ -16,31 +16,37 @@ const shortcuts = [
   <Teleport to="body">
     <div
       v-if="visible"
-      class="overlay-backdrop"
+      class="fixed inset-0 bg-warm-900/40 backdrop-blur-sm flex items-center justify-center z-50"
       @click.self="emit('close')"
       @keydown.escape="emit('close')"
     >
       <div
-        class="overlay-panel"
+        class="bg-white rounded-xl shadow-2xl p-6 min-w-80 max-w-md"
         role="dialog"
         aria-modal="true"
         aria-label="Keyboard shortcuts"
       >
-        <div class="overlay-panel__header">
-          <h2>Keyboard Shortcuts</h2>
+        <div class="flex justify-between items-center mb-5">
+          <h2 class="font-display text-base font-semibold text-warm-900 m-0">
+            Keyboard Shortcuts
+          </h2>
           <button
-            class="overlay-panel__close"
+            class="font-sans text-warm-400 hover:text-warm-700 bg-transparent border-0 text-lg cursor-pointer p-1 transition-colors leading-none"
             aria-label="Close"
             @click="emit('close')"
           >
             ✕
           </button>
         </div>
-        <table class="overlay-panel__table">
+        <table class="w-full border-collapse font-sans text-sm">
           <thead>
             <tr>
-              <th>Key</th>
-              <th>Action</th>
+              <th class="text-left px-2 py-2 font-sans text-xs font-semibold uppercase tracking-widest text-warm-400 border-b border-warm-200">
+                Key
+              </th>
+              <th class="text-left px-2 py-2 font-sans text-xs font-semibold uppercase tracking-widest text-warm-400 border-b border-warm-200">
+                Action
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -48,8 +54,12 @@ const shortcuts = [
               v-for="sc in shortcuts"
               :key="sc.keys"
             >
-              <td><kbd>{{ sc.keys }}</kbd></td>
-              <td>{{ sc.action }}</td>
+              <td class="px-2 py-2 border-b border-warm-100">
+                <kbd class="inline-block font-mono text-xs px-1.5 py-0.5 bg-warm-100 border border-warm-300 rounded text-warm-700">{{ sc.keys }}</kbd>
+              </td>
+              <td class="px-2 py-2 border-b border-warm-100 text-warm-700">
+                {{ sc.action }}
+              </td>
             </tr>
           </tbody>
         </table>
@@ -57,70 +67,3 @@ const shortcuts = [
     </div>
   </Teleport>
 </template>
-
-<style scoped>
-.overlay-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.45);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 100;
-}
-.overlay-panel {
-  background: white;
-  border-radius: 8px;
-  padding: 24px;
-  min-width: 320px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-}
-.overlay-panel__header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
-}
-.overlay-panel__header h2 {
-  margin: 0;
-  font-size: 1rem;
-  font-weight: 700;
-}
-.overlay-panel__close {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 1rem;
-  color: #6b7280;
-  padding: 4px;
-}
-.overlay-panel__table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.875rem;
-}
-.overlay-panel__table th {
-  text-align: left;
-  padding: 6px 8px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: #6b7280;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  border-bottom: 1px solid #e5e7eb;
-}
-.overlay-panel__table td {
-  padding: 8px 8px;
-  border-bottom: 1px solid #f3f4f6;
-}
-kbd {
-  display: inline-block;
-  padding: 2px 6px;
-  background: #f3f4f6;
-  border: 1px solid #d1d5db;
-  border-radius: 3px;
-  font-family: monospace;
-  font-size: 0.8rem;
-  white-space: nowrap;
-}
-</style>

@@ -19,48 +19,66 @@ function formatWer(wer: number | null): string {
 </script>
 
 <template>
-  <div class="queue-table-wrap">
+  <div class="overflow-x-auto">
     <p
       v-if="loading"
-      class="queue-table__loading"
+      class="text-center text-warm-400 font-sans text-sm py-16"
     >
       Loading…
     </p>
 
     <table
       v-else
-      class="queue-table"
+      class="w-full border-collapse"
     >
       <thead>
         <tr>
-          <th>Filename</th>
-          <th>Duration</th>
-          <th>Status</th>
-          <th>WER</th>
-          <th>Annotator</th>
+          <th class="text-left px-4 py-3 font-sans text-xs font-semibold uppercase tracking-widest text-warm-400 border-b-2 border-warm-200">
+            Filename
+          </th>
+          <th class="text-left px-4 py-3 font-sans text-xs font-semibold uppercase tracking-widest text-warm-400 border-b-2 border-warm-200">
+            Duration
+          </th>
+          <th class="text-left px-4 py-3 font-sans text-xs font-semibold uppercase tracking-widest text-warm-400 border-b-2 border-warm-200">
+            Status
+          </th>
+          <th class="text-left px-4 py-3 font-sans text-xs font-semibold uppercase tracking-widest text-warm-400 border-b-2 border-warm-200">
+            WER
+          </th>
+          <th class="text-left px-4 py-3 font-sans text-xs font-semibold uppercase tracking-widest text-warm-400 border-b-2 border-warm-200">
+            Annotator
+          </th>
         </tr>
       </thead>
       <tbody>
         <tr
           v-for="item in items"
           :key="item.id"
-          class="queue-table__row"
+          class="border-b border-warm-100 hover:bg-sage-50 focus:bg-sage-50 cursor-pointer transition-colors duration-150 focus:outline-none"
           tabindex="0"
           @click="router.push(`/annotate/${item.id}`)"
           @keydown.enter="router.push(`/annotate/${item.id}`)"
         >
-          <td class="queue-table__filename">
+          <td class="px-4 py-3 align-middle font-mono text-sm text-warm-800">
             {{ item.originalFilename }}
           </td>
-          <td>{{ formatDuration(item.durationSeconds) }}</td>
-          <td><Badge :status="item.status" /></td>
-          <td>{{ formatWer(item.werCached) }}</td>
-          <td>{{ item.annotator || '—' }}</td>
+          <td class="px-4 py-3 align-middle font-mono text-sm text-warm-600">
+            {{ formatDuration(item.durationSeconds) }}
+          </td>
+          <td class="px-4 py-3 align-middle">
+            <Badge :status="item.status" />
+          </td>
+          <td class="px-4 py-3 align-middle font-mono text-sm text-warm-600">
+            {{ formatWer(item.werCached) }}
+          </td>
+          <td class="px-4 py-3 align-middle font-sans text-sm text-warm-400">
+            {{ item.annotator || '—' }}
+          </td>
         </tr>
         <tr v-if="items.length === 0">
           <td
             colspan="5"
-            class="queue-table__empty"
+            class="text-center py-16 text-warm-400 font-sans text-sm"
           >
             No recordings match the current filters.
           </td>
@@ -69,52 +87,3 @@ function formatWer(wer: number | null): string {
     </table>
   </div>
 </template>
-
-<style scoped>
-.queue-table-wrap {
-  overflow-x: auto;
-}
-.queue-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.875rem;
-}
-.queue-table th {
-  text-align: left;
-  padding: 8px 12px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: #6b7280;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  border-bottom: 2px solid #e5e7eb;
-}
-.queue-table td {
-  padding: 10px 12px;
-  border-bottom: 1px solid #f3f4f6;
-  vertical-align: middle;
-}
-.queue-table__row {
-  cursor: pointer;
-  transition: background 0.1s;
-}
-.queue-table__row:hover,
-.queue-table__row:focus {
-  background: #f9fafb;
-  outline: none;
-}
-.queue-table__filename {
-  font-family: monospace;
-  font-size: 0.85rem;
-}
-.queue-table__empty {
-  text-align: center;
-  padding: 32px;
-  color: #9ca3af;
-}
-.queue-table__loading {
-  text-align: center;
-  color: #9ca3af;
-  padding: 32px;
-}
-</style>

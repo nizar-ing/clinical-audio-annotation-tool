@@ -63,68 +63,68 @@ function formatDuration(seconds: number): string {
 </script>
 
 <template>
-  <main class="workspace">
+  <main class="max-w-5xl mx-auto px-6 py-8">
     <div
       v-if="loadError"
-      class="workspace__error"
+      class="bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-3 text-sm font-sans mb-6"
     >
       {{ loadError }}
     </div>
 
     <template v-else-if="recording">
-      <div class="workspace__header">
-        <div class="workspace__title-row">
+      <div class="mb-6">
+        <div class="flex items-center gap-3 mb-2">
           <button
-            class="workspace__back"
+            class="font-sans text-sm text-warm-400 hover:text-sage-600 transition-colors bg-transparent border-0 cursor-pointer p-0"
             @click="router.push('/queue')"
           >
             ← Queue
           </button>
-          <h1 class="workspace__title">
+          <h1 class="font-mono text-lg font-medium text-warm-900 m-0">
             {{ recording.originalFilename }}
           </h1>
           <Badge :status="recording.status as RecordingStatus" />
         </div>
 
-        <div class="workspace__meta">
+        <div class="flex gap-6 font-sans text-sm text-clin-600">
           <span>{{ formatDuration(recording.durationSeconds) }}</span>
           <span>{{ recording.sampleRate / 1000 }} kHz</span>
           <span>{{ recording.channels === 1 ? 'Mono' : 'Stereo' }}</span>
         </div>
       </div>
 
-      <section class="workspace__player">
+      <section class="mb-5">
         <AudioPlayer :audio-url="audioUrl" />
       </section>
 
-      <section class="workspace__panels">
-        <div class="workspace__panel workspace__panel--placeholder">
-          <p class="workspace__placeholder-label">
+      <section class="grid grid-cols-2 gap-4 mb-6">
+        <div class="bg-white rounded-lg border border-warm-200 shadow-sm p-4 min-h-40">
+          <p class="font-sans text-xs font-semibold uppercase tracking-widest text-warm-400 m-0 mb-3">
             Original AI transcript
           </p>
-          <p class="workspace__placeholder-note">
+          <p class="font-sans text-sm text-warm-300 m-0">
             Transcript editor available in the next phase.
           </p>
         </div>
-        <div class="workspace__panel workspace__panel--placeholder">
-          <p class="workspace__placeholder-label">
+        <div class="bg-white rounded-lg border border-warm-200 shadow-sm p-4 min-h-40">
+          <p class="font-sans text-xs font-semibold uppercase tracking-widest text-warm-400 m-0 mb-3">
             Corrected transcript &amp; annotations
           </p>
-          <p class="workspace__placeholder-note">
+          <p class="font-sans text-sm text-warm-300 m-0">
             Transcript editor available in the next phase.
           </p>
         </div>
       </section>
 
-      <footer class="workspace__footer">
+      <footer class="flex justify-end items-center gap-3 pt-4 border-t border-warm-200">
         <p
           v-if="statusError"
-          class="workspace__error workspace__error--inline"
+          class="font-sans text-sm text-red-600 m-0"
         >
           {{ statusError }}
         </p>
         <button
-          class="workspace__btn workspace__btn--complete"
+          class="bg-sage-500 hover:bg-sage-600 text-white font-sans font-medium text-sm px-5 py-2 rounded-lg transition-colors border-0 cursor-pointer disabled:bg-warm-300 disabled:cursor-not-allowed"
           :disabled="completing || recording.status === 'DONE'"
           @click="markComplete"
         >
@@ -135,122 +135,9 @@ function formatDuration(seconds: number): string {
 
     <p
       v-else
-      class="workspace__loading"
+      class="text-center text-warm-400 font-sans text-sm py-16"
     >
       Loading recording…
     </p>
   </main>
 </template>
-
-<style scoped>
-.workspace {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 24px 16px;
-}
-.workspace__header {
-  margin-bottom: 20px;
-}
-.workspace__title-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 8px;
-}
-.workspace__back {
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: #6b7280;
-  font-size: 0.875rem;
-  padding: 0;
-}
-.workspace__back:hover { color: #111827; }
-.workspace__title {
-  margin: 0;
-  font-size: 1.1rem;
-  font-weight: 700;
-  font-family: monospace;
-}
-.workspace__meta {
-  display: flex;
-  gap: 16px;
-  font-size: 0.8rem;
-  color: #6b7280;
-}
-.workspace__player {
-  margin-bottom: 20px;
-}
-.workspace__panels {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  margin-bottom: 20px;
-}
-.workspace__panel {
-  border: 1px solid #e5e7eb;
-  border-radius: 6px;
-  padding: 16px;
-  min-height: 160px;
-}
-.workspace__panel--placeholder {
-  background: #f9fafb;
-}
-.workspace__placeholder-label {
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: #6b7280;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin: 0 0 8px;
-}
-.workspace__placeholder-note {
-  font-size: 0.875rem;
-  color: #9ca3af;
-  margin: 0;
-}
-.workspace__footer {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 12px;
-  border-top: 1px solid #e5e7eb;
-  padding-top: 16px;
-}
-.workspace__btn {
-  padding: 8px 20px;
-  border-radius: 4px;
-  font-size: 0.875rem;
-  font-weight: 600;
-  cursor: pointer;
-  border: none;
-  transition: background 0.1s;
-}
-.workspace__btn--complete {
-  background: #6366f1;
-  color: white;
-}
-.workspace__btn--complete:hover:not(:disabled) {
-  background: #4f46e5;
-}
-.workspace__btn--complete:disabled {
-  background: #c7d2fe;
-  cursor: not-allowed;
-}
-.workspace__error {
-  color: #dc2626;
-  background: #fee2e2;
-  border-radius: 4px;
-  padding: 8px 12px;
-  font-size: 0.875rem;
-  margin-bottom: 16px;
-}
-.workspace__error--inline {
-  margin-bottom: 0;
-}
-.workspace__loading {
-  text-align: center;
-  color: #9ca3af;
-  padding: 48px;
-}
-</style>

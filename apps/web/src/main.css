@@ -1,0 +1,87 @@
+@import "tailwindcss";
+
+@theme {
+  /* Typography */
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-sans: 'DM Sans', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* Sage Green — recovery, done, primary CTA */
+  --color-sage-50: #f0f7f6;
+  --color-sage-100: #d9edea;
+  --color-sage-200: #b3dbd3;
+  --color-sage-300: #7ec0b5;
+  --color-sage-400: #50a799;
+  --color-sage-500: #3d8a7e;
+  --color-sage-600: #2f6d63;
+  --color-sage-700: #255850;
+  --color-sage-800: #1d4540;
+  --color-sage-900: #163532;
+
+  /* Clinical Blue — silence, relax, audio zone */
+  --color-clin-50: #eff6ff;
+  --color-clin-100: #dbeafe;
+  --color-clin-200: #bfdbfe;
+  --color-clin-300: #93c5fd;
+  --color-clin-400: #6b9fde;
+  --color-clin-500: #4d78be;
+  --color-clin-600: #3b5f9f;
+  --color-clin-700: #2d4a7a;
+
+  /* Harvest Amber — patience, creativity, active states */
+  --color-harvest-50: #fffbeb;
+  --color-harvest-100: #fef3c7;
+  --color-harvest-200: #fde68a;
+  --color-harvest-300: #fbbf24;
+  --color-harvest-400: #f59e0b;
+  --color-harvest-500: #d97706;
+  --color-harvest-600: #b45309;
+
+  /* Teal vivid — nav gradient accent */
+  --color-teal-vivid: #14b2c4;
+
+  /* Warm Neutral — text hierarchy, surfaces */
+  --color-warm-50: #fafaf8;
+  --color-warm-100: #f4f4f0;
+  --color-warm-200: #e8e8e0;
+  --color-warm-300: #d4d4c8;
+  --color-warm-400: #a8a89a;
+  --color-warm-500: #78786c;
+  --color-warm-600: #5a5a50;
+  --color-warm-700: #3d3d35;
+  --color-warm-800: #272720;
+  --color-warm-900: #1a1a14;
+}
+
+@layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    font-family: var(--font-sans);
+    color: var(--color-warm-900);
+    background-color: var(--color-warm-50);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-warm-300);
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-warm-400);
+  }
+}

@@ -45,17 +45,16 @@ function onSeekInput(event: Event) {
 </script>
 
 <template>
-  <div class="audio-player">
-    <!-- Hidden native audio element; src comes from prop -->
+  <div class="bg-gradient-to-b from-clin-50 to-white border border-clin-100 rounded-xl p-5 shadow-sm">
     <audio
       ref="audioEl"
       :src="audioUrl"
       preload="metadata"
     />
 
-    <div class="audio-player__controls">
+    <div class="flex items-center gap-2 mb-4">
       <button
-        class="audio-player__btn"
+        class="font-sans text-sm border border-warm-200 bg-white hover:bg-warm-100 text-warm-700 rounded-lg px-3 py-1.5 transition-colors cursor-pointer"
         title="Skip back 5 s (←)"
         @click="skip(-5)"
       >
@@ -63,7 +62,7 @@ function onSeekInput(event: Event) {
       </button>
 
       <button
-        class="audio-player__btn audio-player__btn--primary"
+        class="min-w-12 font-mono font-medium text-base border border-sage-400 bg-white hover:bg-sage-50 text-sage-600 rounded-lg px-3 py-1.5 transition-colors cursor-pointer"
         :title="playing ? 'Pause (Space)' : 'Play (Space)'"
         @click="toggle"
       >
@@ -71,7 +70,7 @@ function onSeekInput(event: Event) {
       </button>
 
       <button
-        class="audio-player__btn"
+        class="font-sans text-sm border border-warm-200 bg-white hover:bg-warm-100 text-warm-700 rounded-lg px-3 py-1.5 transition-colors cursor-pointer"
         title="Skip forward 5 s (→)"
         @click="skip(5)"
       >
@@ -80,7 +79,7 @@ function onSeekInput(event: Event) {
 
       <select
         :value="speed"
-        class="audio-player__speed"
+        class="font-mono text-sm border border-warm-200 bg-white text-warm-700 rounded-lg px-2 py-1.5 focus:ring-2 focus:ring-clin-300 focus:border-clin-400 outline-none cursor-pointer"
         title="Playback speed (, / .)"
         @change="setSpeed(Number(($event.target as HTMLSelectElement).value))"
       >
@@ -94,7 +93,7 @@ function onSeekInput(event: Event) {
       </select>
 
       <button
-        class="audio-player__btn audio-player__btn--ghost"
+        class="ml-auto font-sans text-xs text-warm-400 hover:text-clin-500 bg-transparent border-0 cursor-pointer transition-colors"
         title="Keyboard shortcuts (?)"
         @click="overlayVisible = !overlayVisible"
       >
@@ -102,17 +101,17 @@ function onSeekInput(event: Event) {
       </button>
     </div>
 
-    <div class="audio-player__seek">
-      <span class="audio-player__time">{{ formatTime(currentTime) }}</span>
+    <div class="flex items-center gap-3">
+      <span class="font-mono text-xs text-warm-500 min-w-10 text-center">{{ formatTime(currentTime) }}</span>
       <input
         type="range"
         min="0"
         max="1000"
         :value="Math.round(progress * 1000)"
-        class="audio-player__range"
+        class="flex-1 cursor-pointer accent-clin-500"
         @input="onSeekInput"
       >
-      <span class="audio-player__time">{{ formatTime(duration) }}</span>
+      <span class="font-mono text-xs text-warm-500 min-w-10 text-center">{{ formatTime(duration) }}</span>
     </div>
   </div>
 
@@ -121,65 +120,3 @@ function onSeekInput(event: Event) {
     @close="overlayVisible = false"
   />
 </template>
-
-<style scoped>
-.audio-player {
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  padding: 16px;
-}
-.audio-player__controls {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 12px;
-}
-.audio-player__btn {
-  padding: 6px 12px;
-  border: 1px solid #d1d5db;
-  border-radius: 4px;
-  background: white;
-  cursor: pointer;
-  font-size: 0.875rem;
-  transition: background 0.1s;
-}
-.audio-player__btn:hover {
-  background: #f3f4f6;
-}
-.audio-player__btn--primary {
-  min-width: 48px;
-  font-size: 1rem;
-  border-color: #6366f1;
-  color: #6366f1;
-}
-.audio-player__btn--ghost {
-  border-color: transparent;
-  color: #9ca3af;
-  margin-left: auto;
-}
-.audio-player__speed {
-  font-size: 0.875rem;
-  padding: 5px 8px;
-  border: 1px solid #d1d5db;
-  border-radius: 4px;
-  background: white;
-}
-.audio-player__seek {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.audio-player__time {
-  font-family: monospace;
-  font-size: 0.8rem;
-  color: #6b7280;
-  min-width: 40px;
-  text-align: center;
-}
-.audio-player__range {
-  flex: 1;
-  cursor: pointer;
-  accent-color: #6366f1;
-}
-</style>

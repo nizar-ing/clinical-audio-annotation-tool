@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { SkipBack, SkipForward, Play, Pause, Keyboard } from 'lucide-vue-next';
 import { useAudioPlayer } from '../composables/useAudioPlayer.js';
 import { useKeyboardShortcuts } from '../composables/useKeyboardShortcuts.js';
 import ShortcutsOverlay from './ShortcutsOverlay.vue';
@@ -54,27 +55,44 @@ function onSeekInput(event: Event) {
 
     <div class="flex items-center gap-2 mb-4">
       <button
-        class="font-sans text-sm border border-warm-200 bg-white hover:bg-warm-100 text-warm-700 rounded-lg px-3 py-1.5 transition-colors cursor-pointer"
+        class="flex items-center gap-1.5 font-sans text-sm border border-warm-200 bg-white hover:bg-warm-100 text-warm-700 rounded-lg px-3 py-1.5 transition-colors cursor-pointer"
         title="Skip back 5 s (←)"
         @click="skip(-5)"
       >
-        ◀ 5s
+        <SkipBack
+          :size="13"
+          :stroke-width="1.75"
+        />
+        <span class="font-mono">5s</span>
       </button>
 
       <button
-        class="min-w-12 font-mono font-medium text-base border border-sage-400 bg-white hover:bg-sage-50 text-sage-600 rounded-lg px-3 py-1.5 transition-colors cursor-pointer"
+        class="flex items-center justify-center min-w-12 border border-sage-400 bg-white hover:bg-sage-50 text-sage-600 rounded-lg px-3 py-1.5 transition-colors cursor-pointer"
         :title="playing ? 'Pause (Space)' : 'Play (Space)'"
         @click="toggle"
       >
-        {{ playing ? '❚❚' : '▶' }}
+        <Pause
+          v-if="playing"
+          :size="16"
+          :stroke-width="1.75"
+        />
+        <Play
+          v-else
+          :size="16"
+          :stroke-width="1.75"
+        />
       </button>
 
       <button
-        class="font-sans text-sm border border-warm-200 bg-white hover:bg-warm-100 text-warm-700 rounded-lg px-3 py-1.5 transition-colors cursor-pointer"
+        class="flex items-center gap-1.5 font-sans text-sm border border-warm-200 bg-white hover:bg-warm-100 text-warm-700 rounded-lg px-3 py-1.5 transition-colors cursor-pointer"
         title="Skip forward 5 s (→)"
         @click="skip(5)"
       >
-        5s ▶
+        <span class="font-mono">5s</span>
+        <SkipForward
+          :size="13"
+          :stroke-width="1.75"
+        />
       </button>
 
       <select
@@ -93,11 +111,14 @@ function onSeekInput(event: Event) {
       </select>
 
       <button
-        class="ml-auto font-sans text-xs text-warm-400 hover:text-clin-500 bg-transparent border-0 cursor-pointer transition-colors"
+        class="ml-auto flex items-center text-warm-400 hover:text-clin-500 bg-transparent border-0 cursor-pointer transition-colors"
         title="Keyboard shortcuts (?)"
         @click="overlayVisible = !overlayVisible"
       >
-        ?
+        <Keyboard
+          :size="15"
+          :stroke-width="1.5"
+        />
       </button>
     </div>
 

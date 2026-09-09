@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
+import { ArrowLeft, FileAudio, Clock, Activity, Headphones } from 'lucide-vue-next';
 import AudioPlayer from './AudioPlayer.vue';
 import Badge from '../../../shared/ui/Badge.vue';
 import { getRecording, updateQueueStatus } from '../../work-queue/api/queue.api.js';
@@ -75,21 +76,53 @@ function formatDuration(seconds: number): string {
       <div class="mb-6">
         <div class="flex items-center gap-3 mb-2">
           <button
-            class="font-sans text-sm text-warm-400 hover:text-sage-600 transition-colors bg-transparent border-0 cursor-pointer p-0"
+            class="flex items-center gap-1.5 font-sans text-sm text-warm-400 hover:text-sage-600 transition-colors bg-transparent border-0 cursor-pointer p-0"
             @click="router.push('/queue')"
           >
-            ← Queue
+            <ArrowLeft
+              :size="14"
+              :stroke-width="2"
+            />
+            Queue
           </button>
-          <h1 class="font-mono text-lg font-medium text-warm-900 m-0">
-            {{ recording.originalFilename }}
-          </h1>
+          <span class="flex items-center gap-2">
+            <FileAudio
+              :size="16"
+              :stroke-width="1.5"
+              class="text-warm-400 shrink-0"
+            />
+            <h1 class="font-mono text-lg font-medium text-warm-900 m-0">
+              {{ recording.originalFilename }}
+            </h1>
+          </span>
           <Badge :status="recording.status as RecordingStatus" />
         </div>
 
-        <div class="flex gap-6 font-sans text-sm text-clin-600">
-          <span>{{ formatDuration(recording.durationSeconds) }}</span>
-          <span>{{ recording.sampleRate / 1000 }} kHz</span>
-          <span>{{ recording.channels === 1 ? 'Mono' : 'Stereo' }}</span>
+        <div class="flex gap-5 font-sans text-sm text-clin-600">
+          <span class="flex items-center gap-1.5">
+            <Clock
+              :size="13"
+              :stroke-width="1.5"
+              class="shrink-0"
+            />
+            {{ formatDuration(recording.durationSeconds) }}
+          </span>
+          <span class="flex items-center gap-1.5">
+            <Activity
+              :size="13"
+              :stroke-width="1.5"
+              class="shrink-0"
+            />
+            {{ recording.sampleRate / 1000 }} kHz
+          </span>
+          <span class="flex items-center gap-1.5">
+            <Headphones
+              :size="13"
+              :stroke-width="1.5"
+              class="shrink-0"
+            />
+            {{ recording.channels === 1 ? 'Mono' : 'Stereo' }}
+          </span>
         </div>
       </div>
 

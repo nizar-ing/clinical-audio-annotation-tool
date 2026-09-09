@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
+import { FileAudio, Loader2, Inbox } from 'lucide-vue-next';
 import Badge from '../../../shared/ui/Badge.vue';
 import type { QueueItem } from '../api/queue.api.js';
 
@@ -20,12 +21,17 @@ function formatWer(wer: number | null): string {
 
 <template>
   <div class="overflow-x-auto">
-    <p
+    <div
       v-if="loading"
-      class="text-center text-warm-400 font-sans text-sm py-16"
+      class="flex flex-col items-center gap-3 py-16 text-warm-400 font-sans text-sm"
     >
+      <Loader2
+        :size="22"
+        :stroke-width="1.5"
+        class="animate-spin text-clin-400"
+      />
       Loading…
-    </p>
+    </div>
 
     <table
       v-else
@@ -59,8 +65,15 @@ function formatWer(wer: number | null): string {
           @click="router.push(`/annotate/${item.id}`)"
           @keydown.enter="router.push(`/annotate/${item.id}`)"
         >
-          <td class="px-4 py-3 align-middle font-mono text-sm text-warm-800">
-            {{ item.originalFilename }}
+          <td class="px-4 py-3 align-middle">
+            <span class="flex items-center gap-2">
+              <FileAudio
+                :size="14"
+                :stroke-width="1.5"
+                class="text-warm-300 shrink-0"
+              />
+              <span class="font-mono text-sm text-warm-800">{{ item.originalFilename }}</span>
+            </span>
           </td>
           <td class="px-4 py-3 align-middle font-mono text-sm text-warm-600">
             {{ formatDuration(item.durationSeconds) }}
@@ -76,11 +89,15 @@ function formatWer(wer: number | null): string {
           </td>
         </tr>
         <tr v-if="items.length === 0">
-          <td
-            colspan="5"
-            class="text-center py-16 text-warm-400 font-sans text-sm"
-          >
-            No recordings match the current filters.
+          <td colspan="5">
+            <div class="flex flex-col items-center gap-2 py-16 text-warm-400 font-sans text-sm">
+              <Inbox
+                :size="34"
+                :stroke-width="1.25"
+                class="text-warm-300"
+              />
+              No recordings match the current filters.
+            </div>
           </td>
         </tr>
       </tbody>

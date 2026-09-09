@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { X } from 'lucide-vue-next';
 defineProps<{ visible: boolean }>();
 const emit = defineEmits<{ close: [] }>();
 
@@ -31,11 +32,14 @@ const shortcuts = [
             Keyboard Shortcuts
           </h2>
           <button
-            class="font-sans text-warm-400 hover:text-warm-700 bg-transparent border-0 text-lg cursor-pointer p-1 transition-colors leading-none"
+            class="flex items-center justify-center text-warm-400 hover:text-warm-700 bg-transparent border-0 cursor-pointer p-1 transition-colors"
             aria-label="Close"
             @click="emit('close')"
           >
-            ✕
+            <X
+              :size="16"
+              :stroke-width="2"
+            />
           </button>
         </div>
         <table class="w-full border-collapse font-sans text-sm">

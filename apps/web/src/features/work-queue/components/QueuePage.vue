@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ListChecks } from 'lucide-vue-next';
 import { useQueue } from '../composables/useQueue.js';
 import QueueFilters from './QueueFilters.vue';
 import QueueTable from './QueueTable.vue';
@@ -8,7 +9,12 @@ const { items, total, loading, error, statusFilter, sort, setStatusFilter, setSo
 
 <template>
   <main class="card-container max-w-7xl mx-auto px-6 py-8 my-8">
-    <div class="flex items-baseline gap-3 mb-5">
+    <div class="flex items-center gap-3 mb-5">
+      <ListChecks
+        :size="22"
+        :stroke-width="1.5"
+        class="text-sage-600 shrink-0"
+      />
       <h1 class="font-display text-2xl font-semibold text-warm-900 m-0">
         Annotation Queue
       </h1>

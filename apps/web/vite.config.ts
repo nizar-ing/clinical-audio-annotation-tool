@@ -11,6 +11,12 @@ export default defineConfig({
         target: 'http://localhost:4000',
         changeOrigin: true,
       },
+      // Audio files are stored and served by the API; forward /uploads so the
+      // browser can load audio metadata and the word-seek feature works in dev.
+      '/uploads': {
+        target: 'http://localhost:4000',
+        changeOrigin: true,
+      },
     },
   },
   test: {

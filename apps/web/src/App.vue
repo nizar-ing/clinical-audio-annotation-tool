@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router';
 import { Mic } from 'lucide-vue-next';
+import ExportButton from './features/export/components/ExportButton.vue';
 </script>
 
 <template>
@@ -20,6 +21,9 @@ import { Mic } from 'lucide-vue-next';
       >
         Queue
       </RouterLink>
+      <div class="ml-auto">
+        <ExportButton />
+      </div>
     </nav>
     <RouterView />
   </div>

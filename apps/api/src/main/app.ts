@@ -4,6 +4,7 @@ import { createAudioAnalysisModule } from '../audio-analysis/audio-analysis.modu
 import { createAnnotationModule } from '../annotation/annotation.module.js';
 import { createWorkQueueModule } from '../work-queue/work-queue.module.js';
 import { createTranscriptionModule } from '../transcription/transcription.module.js';
+import { createExportModule } from '../export/export.module.js';
 import { errorHandler } from '../shared/infrastructure/http/error-handler.middleware.js';
 import { env } from '../shared/infrastructure/config/env.js';
 
@@ -33,6 +34,7 @@ export function createApp() {
   app.use('/api/v1', createAudioAnalysisModule());
   app.use('/api/v1', createAnnotationModule());
   app.use('/api/v1', createWorkQueueModule());
+  app.use('/api/v1', createExportModule());
 
   // express.static handles Range headers natively; audio seeking works without a custom stream endpoint.
   app.use('/uploads', express.static(env.UPLOADS_DIR));

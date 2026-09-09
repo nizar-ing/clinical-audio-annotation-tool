@@ -3,6 +3,7 @@ import { createIngestionModule } from '../ingestion/ingestion.module.js';
 import { createAudioAnalysisModule } from '../audio-analysis/audio-analysis.module.js';
 import { createAnnotationModule } from '../annotation/annotation.module.js';
 import { createWorkQueueModule } from '../work-queue/work-queue.module.js';
+import { createTranscriptionModule } from '../transcription/transcription.module.js';
 import { errorHandler } from '../shared/infrastructure/http/error-handler.middleware.js';
 import { env } from '../shared/infrastructure/config/env.js';
 
@@ -16,7 +17,19 @@ export function createApp() {
     res.json({ data: { status: 'ok' } });
   });
 
-  app.use('/api/v1', createIngestionModule());
+  const transcription = createTranscriptionModule();
+  // Ingestion needs the transcription CreateTranscriptHandler to materialise a Transcript
+  // row on each successful pairing. The port declared in ingestion/application/ports/
+  // is satisfied by adapting the transcription handler to the port's shape.
+  app.use(
+    '/api/v1',
+    createIngestionModule({
+      createTranscript: {
+        create: (input) => transcription.createHandler.execute(input).then(() => undefined),
+      },
+    }),
+  );
+  app.use('/api/v1', transcription.router);
   app.use('/api/v1', createAudioAnalysisModule());
   app.use('/api/v1', createAnnotationModule());
   app.use('/api/v1', createWorkQueueModule());

@@ -9,15 +9,20 @@ import { ImportTranscriptsHandler } from './application/use-cases/import-transcr
 import { PairImportRowHandler } from './application/use-cases/pair-import-row/pair-import-row.handler.js';
 import { UnpairImportRowHandler } from './application/use-cases/unpair-import-row/unpair-import-row.handler.js';
 import { createIngestionRouter } from './presentation/ingestion.controller.js';
+import type { CreateTranscriptPort } from './application/ports/create-transcript.port.js';
 
-export function createIngestionModule(): Router {
+export interface IngestionModuleDeps {
+  createTranscript: CreateTranscriptPort;
+}
+
+export function createIngestionModule(deps: IngestionModuleDeps): Router {
   const recordings = new PrismaRecordingRepository(prisma);
   const importRows = new PrismaImportRowRepository(prisma);
   const storage = new LocalDiskAudioStorage();
   const probe = new FfprobeAudioProbe();
 
   const uploadHandler = new UploadRecordingsHandler(recordings, storage, probe);
-  const importHandler = new ImportTranscriptsHandler(importRows, recordings);
+  const importHandler = new ImportTranscriptsHandler(importRows, recordings, deps.createTranscript);
   const pairHandler = new PairImportRowHandler(importRows, recordings);
   const unpairHandler = new UnpairImportRowHandler(importRows, recordings);
 

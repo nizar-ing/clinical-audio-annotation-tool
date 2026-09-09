@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { PairingDomainService } from '../../../domain/services/pairing.domain-service.js';
 import type { RecordingRepositoryPort } from '../../ports/recording.repository.port.js';
 import type { ImportRowRepositoryPort } from '../../ports/import-row.repository.port.js';
+import type { CreateTranscriptPort } from '../../ports/create-transcript.port.js';
 import type { ImportTranscriptsCommand } from './import-transcripts.command.js';
 
 const TranscriptRowSchema = z.object({
@@ -29,6 +30,7 @@ export class ImportTranscriptsHandler {
   constructor(
     private readonly importRows: ImportRowRepositoryPort,
     private readonly recordings: RecordingRepositoryPort,
+    private readonly createTranscript: CreateTranscriptPort,
   ) {}
 
   async execute(cmd: ImportTranscriptsCommand): Promise<ImportResult> {
@@ -96,6 +98,9 @@ export class ImportTranscriptsHandler {
         matchedRecordingId: recording.id,
         errorCode: null,
       });
+      // Materialise the Transcript on pairing so the annotator workspace has something to load.
+      // Cross-context call goes through a port; the adapter lives in the transcription module.
+      await this.createTranscript.create({ recordingId: recording.id, originalText: row.label });
       await this.recordings.updateStatus(recording.id, 'QUEUED');
       savedMatched.push({ recordingId: recording.id, importRowId: saved.id, path: row.path });
     }

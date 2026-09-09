@@ -227,6 +227,20 @@ Effort is concentrated where a bug would actually hurt:
 - Architecture. No domain file imports a framework.
 - Word error rate. Substitution, deletion, insertion, identical strings and an empty reference.
 
+**End-to-end (Playwright).** A Chromium suite in `apps/web/e2e/` covers the four primary user-facing flows. Requires both servers running (`yarn dev` in a separate terminal).
+
+```bash
+yarn workspace web e2e        # run all e2e specs headlessly
+yarn workspace web e2e:ui     # interactive Playwright UI mode
+```
+
+| Spec | What it exercises |
+|---|---|
+| `work-queue.spec.ts` | Queue renders seeded recordings; status badge and duration visible |
+| `audio-player.spec.ts` | Play/pause, skip controls, speed selector, keyboard shortcuts |
+| `span-annotation.spec.ts` | Select text, open popover, submit a span, see it listed |
+| `word-seek.spec.ts` | Click a word token, assert the player time advances |
+
 ## Project structure
 
 ```

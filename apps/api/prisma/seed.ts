@@ -100,7 +100,7 @@ async function main() {
       sampleRate: 44100,
       channels: 1,
       bitDepth: null,
-      status: 'QUEUED',
+      status: 'IN_PROGRESS',
     },
   });
   const tx03 = await prisma.transcript.create({
@@ -153,7 +153,7 @@ async function main() {
       sampleRate: 44100,
       channels: 1,
       bitDepth: 16,
-      status: 'QUEUED',
+      status: 'DONE',
     },
   });
   const label05 =
@@ -241,12 +241,12 @@ async function main() {
     },
   });
 
-  console.log('[seed] Phase 1: six fixtures loaded.');
-  console.log('  demo-01  QUEUED  (happy path, 40s WAV with LIST INFO)');
-  console.log('  demo-02  REJECTED_TOO_SHORT  (12s WAV)');
-  console.log('  demo-03  QUEUED  (30s MP3)');
-  console.log('  demo-04  UNPAIRED  (25s M4A, no transcript)');
-  console.log('  demo-05  QUEUED  (35s WAV, pre-annotated with 4 spans)');
+  console.log('[seed] six fixtures loaded — one per status edge case.');
+  console.log('  demo-01  QUEUED       (40s WAV with LIST INFO — happy path entry point)');
+  console.log('  demo-02  REJECTED_TOO_SHORT  (12s WAV — duration gate)');
+  console.log('  demo-03  IN_PROGRESS  (30s MP3 — active annotation session)');
+  console.log('  demo-04  UNPAIRED     (25s M4A — no transcript match)');
+  console.log('  demo-05  DONE         (35s WAV — pre-annotated with 4 spans)');
   console.log('  demo-99  unmatched ImportRow  (no audio file)');
 }
 

@@ -182,20 +182,28 @@ There are no deviations from the mandated stack. Two were considered and rejecte
 
 Also available in the app behind `?`.
 
+**Audio player:**
+
 | Key | Action |
 |---|---|
-| `Space` or `K` | Play or pause |
-| `J` and `L` | Jump 5 seconds back or forward |
-| `Shift+J` and `Shift+L` | Jump 1 second back or forward |
-| `[` and `]` | Decrease or increase playback speed |
-| `N` and `P` | Next or previous queue item |
-| Click a word | Seek to that word's estimated timestamp |
+| `Space` | Play or pause |
+| `← / J` | Skip back 5 seconds |
+| `→ / L` | Skip forward 5 seconds |
+| `, / [` | Decrease playback speed by 0.25× |
+| `. / ]` | Increase playback speed by 0.25× |
+| `?` | Toggle this overlay |
+
+**Annotation workspace** (phase 6):
+
+| Key | Action |
+|---|---|
 | `1` to `6` | Tag the selection: medical term, measurement, number, formatting command, named entity, spelled out |
 | `Enter` | Confirm the annotation popover |
 | `Esc` | Cancel, or close the popover |
 | `Ctrl/Cmd+Z` | Undo a text edit |
-| `Ctrl/Cmd+S` | Force a save. Autosave runs continuously anyway |
-| `?` | Toggle this overlay |
+| `Ctrl/Cmd+S` | Force a save |
+| `N` and `P` | Next or previous queue item |
+| Click a word | Seek to that word's estimated timestamp |
 
 ## Tests
 

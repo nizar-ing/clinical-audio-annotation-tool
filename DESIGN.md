@@ -65,6 +65,7 @@ The last row deserves a direct defence. I have built the full tactical pattern b
 | Prisma | Prisma 7 | driver adapter required; `@prisma/adapter-pg` wired in |
 | PostgreSQL | PostgreSQL 16 | — |
 | Vue 3, Composition API, `<script setup>` | Vue 3 | applied throughout |
+| — | Vue Router 5 | `IMPLEMENTATION_PLAN.md §4.5` shows an explicit `router/` folder; Vue Router is the canonical routing library for Vue 3. No store library added — per-feature composables are sufficient for one annotator on one machine. |
 | yarn or bun | Yarn 4 workspaces | api, web, contracts |
 | Docker Compose | Docker Compose | Postgres healthcheck ensures readiness before migrations run |
 

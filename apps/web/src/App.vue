@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router';
-import { Mic } from 'lucide-vue-next';
+import { Mic, ListChecks, FolderInput } from 'lucide-vue-next';
 import ExportButton from './features/export/components/ExportButton.vue';
 </script>
 
@@ -17,9 +17,25 @@ import ExportButton from './features/export/components/ExportButton.vue';
       </span>
       <RouterLink
         to="/queue"
-        class="text-base font-medium text-sage-700 no-underline transition-colors border-b-2 border-transparent pb-0.5 hover:text-sage-900 hover:border-sage-500 [&.router-link-active]:text-sage-900 [&.router-link-active]:border-sage-600"
+        class="flex items-center gap-1.5 text-base font-medium text-sage-700 no-underline transition-colors border-b-2 border-transparent pb-0.5 hover:text-sage-900 hover:border-sage-500 [&.router-link-active]:text-sage-900 [&.router-link-active]:border-sage-600"
       >
+        <ListChecks
+          :size="16"
+          :stroke-width="1.5"
+          class="shrink-0"
+        />
         Queue
+      </RouterLink>
+      <RouterLink
+        to="/ingest"
+        class="flex items-center gap-1.5 text-base font-medium text-sage-700 no-underline transition-colors border-b-2 border-transparent pb-0.5 hover:text-sage-900 hover:border-sage-500 [&.router-link-active]:text-sage-900 [&.router-link-active]:border-sage-600"
+      >
+        <FolderInput
+          :size="16"
+          :stroke-width="1.5"
+          class="shrink-0"
+        />
+        Ingest
       </RouterLink>
       <div class="ml-auto">
         <ExportButton />

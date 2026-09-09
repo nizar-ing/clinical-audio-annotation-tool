@@ -9,6 +9,10 @@ export const router = createRouter({
       component: () => import('../features/work-queue/components/QueuePage.vue'),
     },
     {
+      path: '/ingest',
+      component: () => import('../features/ingestion/components/IngestPage.vue'),
+    },
+    {
       path: '/annotate/:id',
       component: () => import('../features/player/components/WorkspacePage.vue'),
       props: true,

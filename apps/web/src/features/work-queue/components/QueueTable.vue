@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useRouter } from 'vue-router';
+import { useRouter, RouterLink } from 'vue-router';
 import { FileAudio, Loader2, Inbox } from 'lucide-vue-next';
 import Badge from '../../../shared/ui/Badge.vue';
 import type { QueueItem } from '../api/queue.api.js';
@@ -97,6 +97,12 @@ function formatWer(wer: number | null): string {
                 class="text-warm-300"
               />
               No recordings match the current filters.
+              <RouterLink
+                to="/ingest"
+                class="text-sage-600 hover:text-sage-800 no-underline font-medium transition-colors"
+              >
+                Upload recordings →
+              </RouterLink>
             </div>
           </td>
         </tr>

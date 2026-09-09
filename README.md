@@ -114,9 +114,10 @@ The honest state of every requirement in the brief.
 | **Audio player** | | |
 | Play and pause, seek, speed, jump backward and forward | Done | |
 | Keyboard shortcuts, documented in the app | Done | Behind `?`, and in the table below |
-| Click a word to seek | Partial | Timings are estimated, since the input format carries none. Method in [`DESIGN.md`](./DESIGN.md), section 4 |
+| Click a word to seek | Partial | Alignment logic is ready; the workspace UI is phase 6. Timings are estimated — method in [`DESIGN.md`](./DESIGN.md), section 4 |
 | **Transcript** | | |
-| Immutable original, editable corrected copy, diff view | Done | Immutability enforced by a database trigger, not only in code |
+| Immutable original | Done | `BEFORE UPDATE` trigger on `Transcript`; no code path can overwrite `originalText` |
+| Editable corrected copy and diff view | Planned (phase 6) | Workspace editor and diff panel not yet built |
 | **Annotation** | | |
 | `MEDICAL_TERM`, `MEASUREMENT`, `NUMBER`, `FORMATTING_COMMAND`, `NAMED_ENTITY` | Done | |
 | `SPELLED_OUT` | Partial | Ships without spelling alphabet detection. The annotator types the resolved word |
@@ -127,11 +128,11 @@ The honest state of every requirement in the brief.
 | `bext` and `LIST INFO` metadata | Done | RIFF chunks, so WAV only. The panel says so when they are absent |
 | Speech rate in words per minute, overridable | Done | Whitespace tokenisation, a documented simplification |
 | Distance estimate, overridable | Done | RMS to noise floor heuristic, labelled as an estimate everywhere |
-| Overrides are what get exported | Done | Tested, since this one is easy to get backwards |
+| Override precedence is correct | Done | Tested: `final` equals the override when set, the derived value otherwise |
 | **Export** | | |
-| JSONL with the audio reference, both transcripts, spans, attributes and conditions | Done | Schema justified in [`DESIGN.md`](./DESIGN.md), section 1 |
+| JSONL with the audio reference, both transcripts, spans, attributes and conditions | Planned (phase 6) | Schema justified in [`DESIGN.md`](./DESIGN.md), section 1 |
 | **Beyond the brief** | | |
-| Word error rate, original against corrected | Done | Per item in the queue, plus a corpus aggregate in the export |
+| Word error rate, original against corrected | Done | Computed and cached per item; surfaced in the queue. Corpus aggregate is part of the phase 6 export |
 | Architecture test: the domain layer imports no framework | Done | A dependency cruiser rule, run by `yarn test` |
 | **Out of scope** | | |
 | Undo and redo across span operations | Out of scope | Native text undo only. See [`DESIGN.md`](./DESIGN.md), section 5 |
@@ -219,9 +220,9 @@ Effort is concentrated where a bug would actually hurt:
 - Pairing ladder. Every rung, plus duplicate paths, unmatched audio, unmatched rows and the ambiguous basename case.
 - Unit normalisation. Every unit in the brief, including the two that must not be converted.
 - Span persistence. Create, update and delete round trips, and re-anchoring after the transcript is edited underneath a span.
-- Original transcript immutability. A direct `UPDATE` is attempted and asserted to fail at the database.
+- Original transcript immutability (phase 6). A direct `UPDATE` will be attempted and asserted to fail at the database. The trigger is in place; the integration test is pending.
 - Override precedence. `final` equals the override when one is set, and the derived value when not. Easy to get backwards, and silent when wrong.
-- Export schema. A snapshot over a fully populated fixture, which doubles as executable documentation of the schema.
+- Export schema (phase 6). A snapshot over a fully populated fixture will double as executable documentation of the output format.
 - Architecture. No domain file imports a framework.
 - Word error rate. Substitution, deletion, insertion, identical strings and an empty reference.
 
@@ -255,20 +256,35 @@ File naming is consistent with the DDD conventions used across this author's oth
 
 ## API
 
-Everything sits under `/api/v1`. The full contract is in [`IMPLEMENTATION_PLAN.md`](./IMPLEMENTATION_PLAN.md#6-api).
+Everything sits under `/api/v1`.
+
+**Implemented (phases 0 – 5):**
 
 | Context | Endpoint | Purpose |
 |---|---|---|
-| ingestion | `POST /recordings` | Upload one or more audio files |
-| ingestion | `POST /transcripts/import` | Bulk import the AI transcript JSON array |
-| ingestion | `GET /import-rows?matched=false` | The pairing review list |
-| ingestion | `PUT` and `DELETE /import-rows/:id/pairing` | Manual pair and unpair |
+| – | `GET /health` | Server liveness |
+| ingestion | `POST /recordings` | Upload one or more audio files (multipart) |
+| ingestion | `GET /recordings` | List recordings; optional `?status=` filter |
+| ingestion | `GET /recordings/:id` | Single recording with full header metadata |
+| ingestion | `POST /import-rows` | Bulk import the AI transcript JSON array |
+| ingestion | `GET /import-rows` | Import row list; optional `?matched=` filter |
+| ingestion | `PUT /import-rows/:id/pairing` | Manually pair an import row to a recording |
+| ingestion | `DELETE /import-rows/:id/pairing` | Remove a pairing |
+| annotation | `GET /recordings/:id/annotations` | List annotation spans |
+| annotation | `POST /recordings/:id/annotations` | Create a span |
+| annotation | `PATCH /annotations/:id` | Edit a span and its attributes |
+| annotation | `DELETE /annotations/:id` | Remove a span |
+| audio-analysis | `GET /recordings/:id/conditions` | Derived recording conditions |
+| audio-analysis | `PATCH /recordings/:id/conditions` | Override speech rate or distance estimate |
+| work-queue | `GET /queue` | Filtered, sorted, and paginated queue view |
+| work-queue | `PATCH /queue/:id/status` | Transition a recording to a new status |
+
+**Planned (phase 6):**
+
+| Context | Endpoint | Purpose |
+|---|---|---|
 | transcription | `GET /recordings/:id/transcript` | Original, corrected, word timings and WER |
-| transcription | `PATCH /recordings/:id/transcript/corrected` | Edit, returning a re-anchoring report |
-| annotation | `GET` and `POST /recordings/:id/annotations` | List and create spans |
-| annotation | `PATCH` and `DELETE /annotations/:id` | Edit and remove a span |
-| audio-analysis | `GET` and `PATCH /recordings/:id/conditions` | Derived values and annotator overrides |
-| work-queue | `GET /queue` | Filtered and sorted queue view |
+| transcription | `PATCH /recordings/:id/transcript/corrected` | Save edits; returns re-anchoring report |
 | export | `GET /export?status=DONE` | Stream the JSONL gold standard |
 
 Errors are uniform, shaped as `{ "error": { "code", "message", "details" } }`, with 422 for domain rule violations and 409 for illegal status transitions.

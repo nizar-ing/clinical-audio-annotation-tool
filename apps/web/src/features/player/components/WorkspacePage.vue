@@ -144,11 +144,11 @@ const werPercent = computed(() => `${(editor.wer.value * 100).toFixed(1)}%`);
       <div class="mb-6">
         <div class="flex items-center gap-3 mb-2">
           <button
-            class="flex items-center gap-1.5 font-sans text-sm text-warm-400 hover:text-sage-600 transition-colors bg-transparent border-0 cursor-pointer p-0"
+            class="flex items-center gap-2 font-sans text-base text-white font-semibold px-5 py-2.5 rounded-lg shadow-md hover:shadow-lg hover:brightness-110 transition-all border-0 cursor-pointer bg-gradient-to-br from-sky-500 to-sky-700"
             @click="router.push('/queue')"
           >
             <ArrowLeft
-              :size="14"
+              :size="16"
               :stroke-width="2"
             />
             Queue

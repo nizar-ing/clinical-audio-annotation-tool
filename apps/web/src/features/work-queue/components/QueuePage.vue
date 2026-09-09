@@ -8,7 +8,7 @@ const { items, total, loading, error, statusFilter, sort, setStatusFilter, setSo
 </script>
 
 <template>
-  <main class="card-container max-w-7xl mx-auto px-6 py-8 my-8">
+  <main class="card-container max-w-7xl mx-auto px-6 py-8 mt-36 mb-8">
     <div class="flex items-center gap-3 mb-5">
       <ListChecks
         :size="22"

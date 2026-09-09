@@ -63,7 +63,7 @@ function formatDuration(seconds: number): string {
 </script>
 
 <template>
-  <main class="max-w-5xl mx-auto px-6 py-8">
+  <main class="card-container max-w-5xl mx-auto px-6 py-8 my-8">
     <div
       v-if="loadError"
       class="bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-3 text-sm font-sans mb-6"

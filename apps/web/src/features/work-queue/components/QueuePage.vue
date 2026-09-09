@@ -7,7 +7,7 @@ const { items, total, loading, error, statusFilter, sort, setStatusFilter, setSo
 </script>
 
 <template>
-  <main class="max-w-5xl mx-auto px-6 py-8">
+  <main class="card-container max-w-7xl mx-auto px-6 py-8 my-8">
     <div class="flex items-baseline gap-3 mb-5">
       <h1 class="font-display text-2xl font-semibold text-warm-900 m-0">
         Annotation Queue

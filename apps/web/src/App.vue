@@ -3,8 +3,8 @@ import { RouterLink, RouterView } from 'vue-router';
 </script>
 
 <template>
-  <div class="min-h-screen bg-warm-50">
-    <nav class="flex items-center gap-6 px-6 py-4 bg-gradient-to-r from-sage-50 via-sage-300 to-teal-vivid border-b border-sage-200 shadow-sm">
+  <div class="min-h-screen">
+    <nav class="nav-shiny flex items-center gap-6 px-6 py-4">
       <span class="font-display font-semibold text-sage-800 text-base tracking-tight">
         ClinAnnotate
       </span>

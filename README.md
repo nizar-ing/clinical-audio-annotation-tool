@@ -15,6 +15,10 @@ Doctors dictate operation reports, and a speech model produces a first pass tran
 
 ---
 
+![ClinAnnotate annotation workbench](docs/images/ClinAnnotate.jpg)
+
+---
+
 ## Overview
 
 ClinAnnotate is **not** a speech-to-text system. It sits at the annotation stage — after the AI model has already produced a first-pass transcript. The annotator's job is to correct that transcript and enrich it with typed spans. The five stages below are the entire application:

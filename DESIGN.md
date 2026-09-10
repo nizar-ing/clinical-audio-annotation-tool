@@ -122,6 +122,8 @@ WhisperX, the Montreal Forced Aligner and wav2vec2 forced alignment all violate 
 
 **File-type validation reads magic bytes, not the client-supplied MIME.** The brief requires validation but does not prescribe how. Browsers derive the multipart `Content-Type` from the file extension the user picked, which is not a validation — a `.exe` renamed to `.wav` uploads happily. `AudioFormat.fromMagicBytes` inspects the first twelve bytes for `RIFF`/`WAVE` (WAV), ID3v2 or an MPEG sync word (MP3), or `ftyp` (M4A). Anything else fails with `UnsupportedFormatException`, reported per-file in the 207 response so a spoofed upload in a batch does not sink the good rows. The accepted-format list is thus decoupled from whatever MIME string the browser happened to send.
 
+**Queue is the default landing view, not Ingest.** The root path `/` redirects to `/queue`. Ingest is setup-oriented: upload audio, import AI transcripts, validate input, resolve pairing issues. These operations matter, but they happen intermittently. The queue is where the annotator spends most of their time — identifying pending recordings, selecting the next item, monitoring progress. The brief explicitly defines the work queue as the central list of annotation items. Opening at the place where the most frequent and most valuable work happens is a task-oriented navigation choice, not a cosmetic one. Ingest remains a first-class destination in the main navigation and is always one click away.
+
 ## 5. What was cut, and what comes next
 
 In order of restoration priority:

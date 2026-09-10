@@ -136,7 +136,6 @@
 
   .nav-pill {
     position: relative;
-    overflow: hidden;
     display: inline-flex;
     align-items: center;
     gap: 0.625rem;
@@ -160,10 +159,32 @@
     content: '';
     position: absolute;
     inset: 0;
+    border-radius: inherit;
     background: linear-gradient(90deg, #22d3e8 0%, #50a799 100%);
     opacity: 0;
     transition: opacity 0.22s ease;
     pointer-events: none;
+  }
+
+  /* downward triangle below the active pill */
+  .nav-pill.router-link-active::after {
+    content: '';
+    position: absolute;
+    bottom: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 11px solid var(--color-teal-vivid);
+    pointer-events: none;
+    animation: nav-indicator-appear 0.22s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  @keyframes nav-indicator-appear {
+    from { opacity: 0; transform: translateX(-50%) translateY(-4px); }
+    to   { opacity: 1; transform: translateX(-50%) translateY(0); }
   }
 
   .nav-pill:not(.router-link-active):hover::before {

@@ -18,7 +18,11 @@ export class UpdateSpanHandler {
       const start = cmd.startOffset ?? span.offsets.start;
       const end = cmd.endOffset ?? span.offsets.end;
       const anchor = cmd.anchorText ?? span.anchorText;
-      const offsets = SpanOffsets.create(start, end, anchor.length);
+      const correctedText = await this.annotations.findCorrectedTextByTranscriptId(span.transcriptId);
+      if (correctedText === null) {
+        throw new NotFoundException(`Transcript not found for span ${cmd.id}`);
+      }
+      const offsets = SpanOffsets.create(start, end, correctedText.length);
       span.updateOffsets(offsets, anchor);
     }
 

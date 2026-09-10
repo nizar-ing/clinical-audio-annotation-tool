@@ -23,6 +23,11 @@ export class CreateSpanHandler {
       throw new NotFoundException(`No transcript found for recording ${cmd.recordingId}`);
     }
 
+    const correctedText = await this.annotations.findCorrectedTextByTranscriptId(transcriptId);
+    if (correctedText === null) {
+      throw new NotFoundException(`Corrected transcript not found for recording ${cmd.recordingId}`);
+    }
+
     const parsed = SpanAttributesSchema.safeParse(cmd.attributes);
     if (!parsed.success) {
       throw new DomainException(
@@ -39,7 +44,7 @@ export class CreateSpanHandler {
       }
     }
 
-    const offsets = SpanOffsets.create(cmd.startOffset, cmd.endOffset, cmd.anchorText.length);
+    const offsets = SpanOffsets.create(cmd.startOffset, cmd.endOffset, correctedText.length);
 
     const span = AnnotationSpan.create(randomUUID(), {
       transcriptId,

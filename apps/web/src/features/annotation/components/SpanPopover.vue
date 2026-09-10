@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
 import type { Component } from 'vue';
 import { Stethoscope, Ruler, Hash, Pilcrow, Users, Type } from 'lucide-vue-next';
 import type { SpanAttributes } from 'contracts';
@@ -94,15 +94,18 @@ function handleCancel() {
   emit('cancel');
 }
 
-function onKeydown(event: KeyboardEvent) {
-  if (event.key === 'Escape') { handleCancel(); return; }
-  if (chosenType.value !== null) return; // digit hotkeys only when picking type
+// Document-level listener so Escape and digit hotkeys work without requiring
+// the user to click inside the popover first (e.g. when focus is on the transcript).
+function onGlobalKeydown(event: KeyboardEvent) {
+  if (!frozenAnchorRect.value) return; // popover not open
+  if (event.key === 'Escape') { event.preventDefault(); handleCancel(); return; }
+  if (chosenType.value !== null) return; // digit hotkeys only when type picker is visible
   const match = TYPES.find((t) => t.hotkey === event.key);
-  if (match) {
-    event.preventDefault();
-    chosenType.value = match.key;
-  }
+  if (match) { event.preventDefault(); chosenType.value = match.key; }
 }
+
+onMounted(() => document.addEventListener('keydown', onGlobalKeydown));
+onUnmounted(() => document.removeEventListener('keydown', onGlobalKeydown));
 </script>
 
 <template>
@@ -114,7 +117,6 @@ function onKeydown(event: KeyboardEvent) {
       role="dialog"
       aria-label="Annotate span"
       tabindex="-1"
-      @keydown="onKeydown"
     >
       <div class="bg-white rounded-xl shadow-2xl border border-warm-200 w-80 p-4">
         <p class="font-sans text-xs font-semibold uppercase tracking-widest text-warm-400 m-0 mb-3">

@@ -96,6 +96,16 @@ describe('PrismaAnnotationRepository (integration)', () => {
     expect(tid).toBeNull();
   });
 
+  it('returns corrected text by transcript id', async () => {
+    const text = await repo.findCorrectedTextByTranscriptId(TRANSCRIPT_ID);
+    expect(text).toBe('Cefuroxim 1500 mg intravenös');
+  });
+
+  it('returns null for corrected text when transcript does not exist', async () => {
+    const text = await repo.findCorrectedTextByTranscriptId('nonexistent-transcript');
+    expect(text).toBeNull();
+  });
+
   it('updates a span via upsert', async () => {
     const span = await repo.findById('span-test-1');
     span!.updateAttributes({ spanType: 'MEASUREMENT', value: 2000, unit: 'mg', normalizedValue: 2, normalizedUnit: 'g' });

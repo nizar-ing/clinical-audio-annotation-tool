@@ -180,55 +180,57 @@ async function main() {
     data: { path: 'audio/demo-05.wav', label: label05, matchedRecordingId: rec05.id },
   });
 
-  // Pre-seeded annotation spans for demo-05
-  const cefuroximStart = label05.indexOf('Cefuroxim');
+  // Pre-seeded annotation spans for demo-05.
+  // All offsets are into corrected05, all attributes include spanType so Zod parse succeeds.
+  const cefuroximAnchor = 'Cefuroxim';
+  const cefuroximStart = corrected05.indexOf(cefuroximAnchor);
   await prisma.annotationSpan.create({
     data: {
       transcriptId: tx05.id,
       spanType: 'MEDICAL_TERM',
       startOffset: cefuroximStart,
-      endOffset: cefuroximStart + 'Cefuroxim'.length,
-      anchorText: 'Cefuroxim',
-      attributes: { category: 'drug', note: '' },
+      endOffset: cefuroximStart + cefuroximAnchor.length,
+      anchorText: cefuroximAnchor,
+      attributes: { spanType: 'MEDICAL_TERM', category: 'drug' },
     },
   });
 
-  const measurementText = 'eintausendfuenfhundert Milligramm';
-  const measurementStart = label05.indexOf(measurementText);
+  const measurementAnchor = '1500 mg';
+  const measurementStart = corrected05.indexOf(measurementAnchor);
   await prisma.annotationSpan.create({
     data: {
       transcriptId: tx05.id,
       spanType: 'MEASUREMENT',
       startOffset: measurementStart,
-      endOffset: measurementStart + measurementText.length,
-      anchorText: measurementText,
-      attributes: { value: 1500, unit: 'mg', normalizedValue: 1.5, normalizedUnit: 'g' },
+      endOffset: measurementStart + measurementAnchor.length,
+      anchorText: measurementAnchor,
+      attributes: { spanType: 'MEASUREMENT', value: 1500, unit: 'mg', normalizedValue: 1.5, normalizedUnit: 'g' },
     },
   });
 
-  const formattingText = 'Neue Zeile';
-  const formattingStart = label05.indexOf(formattingText);
+  const formattingAnchor = 'Neue Zeile';
+  const formattingStart = corrected05.indexOf(formattingAnchor);
   await prisma.annotationSpan.create({
     data: {
       transcriptId: tx05.id,
       spanType: 'FORMATTING_COMMAND',
       startOffset: formattingStart,
-      endOffset: formattingStart + formattingText.length,
-      anchorText: formattingText,
-      attributes: { command: 'new_line', literal: false },
+      endOffset: formattingStart + formattingAnchor.length,
+      anchorText: formattingAnchor,
+      attributes: { spanType: 'FORMATTING_COMMAND', command: 'newline', literal: false },
     },
   });
 
-  const numberText = 'sechs null';
-  const numberStart = label05.indexOf(numberText);
+  const numberAnchor = '6-0';
+  const numberStart = corrected05.indexOf(numberAnchor);
   await prisma.annotationSpan.create({
     data: {
       transcriptId: tx05.id,
       spanType: 'NUMBER',
       startOffset: numberStart,
-      endOffset: numberStart + numberText.length,
-      anchorText: numberText,
-      attributes: { value: '6/0' },
+      endOffset: numberStart + numberAnchor.length,
+      anchorText: numberAnchor,
+      attributes: { spanType: 'NUMBER', rendering: 'digits', normalized: '6/0' },
     },
   });
 

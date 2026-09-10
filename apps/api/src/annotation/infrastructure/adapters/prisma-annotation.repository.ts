@@ -30,6 +30,14 @@ export class PrismaAnnotationRepository implements AnnotationRepositoryPort {
     return transcript ? transcript.id : null;
   }
 
+  async findCorrectedTextByTranscriptId(transcriptId: string): Promise<string | null> {
+    const transcript = await this.db.transcript.findUnique({
+      where: { id: transcriptId },
+      select: { correctedText: true },
+    });
+    return transcript ? transcript.correctedText : null;
+  }
+
   async save(span: AnnotationSpan): Promise<AnnotationSpan> {
     const row = await this.db.annotationSpan.upsert({
       where: { id: span.id },

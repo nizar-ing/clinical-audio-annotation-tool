@@ -55,7 +55,7 @@ import ExportButton from './features/export/components/ExportButton.vue';
           </p>
           <p class="font-sans text-white/55 m-0 mt-1 leading-tight"
              style="font-size: 0.72rem; letter-spacing: 0.07em; text-transform: uppercase;">
-            IKIM &middot; Senior Full Stack Engineer Candidat
+            IKIM &middot; Senior Full Stack Engineer Candidate
           </p>
         </div>
       </div>

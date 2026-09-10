@@ -17,7 +17,7 @@ import { usePairingReview } from '../composables/usePairingReview.js';
 
 const { uploading, results: uploadResults, error: uploadError, upload } = useAudioUpload();
 const { importing, result: importResult, error: importError, importFromText, importFromFile } = useTranscriptImport();
-const { recordings: unpairedRecs, rows: unmatchedRows, loading: pairingLoading, error: pairingError, refresh: refreshPairing, pair } = usePairingReview();
+const { recordings: unpairedRecs, rows: unmatchedRows, matchedRows, loading: pairingLoading, error: pairingError, refresh: refreshPairing, pair, unpair } = usePairingReview();
 
 // ── Audio upload ──────────────────────────────────────────────────────────
 const isDragging = ref(false);
@@ -353,121 +353,152 @@ function formatDuration(seconds: number): string {
         {{ pairingError }}
       </p>
 
-      <!-- All paired -->
-      <div
-        v-else-if="!unpairedRecs.length && !unmatchedRows.length"
-        class="flex flex-col items-center gap-3 py-8 font-sans text-sm text-warm-400"
-      >
-        <CheckCircle2
-          :size="28"
-          :stroke-width="1.25"
-          class="text-sage-400"
-        />
-        All recordings are paired.
-        <RouterLink
-          to="/queue"
-          class="text-white no-underline font-semibold transition-all flex items-center gap-2 px-5 py-2.5 rounded-lg shadow-md hover:shadow-lg hover:brightness-110 bg-gradient-to-br from-sky-500 to-sky-700"
+      <template v-else>
+        <!-- Empty state: nothing to show at all -->
+        <div
+          v-if="!unpairedRecs.length && !unmatchedRows.length && !matchedRows.length"
+          class="flex flex-col items-center gap-3 py-8 font-sans text-sm text-warm-400"
         >
-          Go to queue
-          <ArrowRight
-            :size="15"
-            :stroke-width="2"
+          <CheckCircle2
+            :size="28"
+            :stroke-width="1.25"
+            class="text-sage-400"
           />
-        </RouterLink>
-      </div>
+          All recordings are paired.
+          <RouterLink
+            to="/queue"
+            class="text-white no-underline font-semibold transition-all flex items-center gap-2 px-5 py-2.5 rounded-lg shadow-md hover:shadow-lg hover:brightness-110 bg-gradient-to-br from-sky-500 to-sky-700"
+          >
+            Go to queue
+            <ArrowRight
+              :size="15"
+              :stroke-width="2"
+            />
+          </RouterLink>
+        </div>
 
-      <!-- Two-column review -->
-      <div
-        v-else
-        class="grid grid-cols-1 gap-6 sm:grid-cols-2"
-      >
-        <!-- Unmatched audio -->
-        <div>
-          <p class="font-sans text-xs font-semibold uppercase tracking-widest text-warm-400 mb-3">
-            Unmatched audio ({{ unpairedRecs.length }})
-          </p>
-          <div
-            v-if="!unpairedRecs.length"
-            class="font-sans text-sm text-warm-300 italic"
-          >
-            None
-          </div>
-          <ul
-            v-else
-            class="space-y-3 list-none p-0 m-0"
-          >
-            <li
-              v-for="rec in unpairedRecs"
-              :key="rec.id"
-              class="rounded-lg border border-warm-200 px-3 py-3 space-y-2"
+        <!-- Two-column review: unmatched audio + unmatched transcript rows -->
+        <div
+          v-if="unpairedRecs.length || unmatchedRows.length"
+          class="grid grid-cols-1 gap-6 sm:grid-cols-2"
+        >
+          <!-- Unmatched audio -->
+          <div>
+            <p class="font-sans text-xs font-semibold uppercase tracking-widest text-warm-400 mb-3">
+              Unmatched audio ({{ unpairedRecs.length }})
+            </p>
+            <div
+              v-if="!unpairedRecs.length"
+              class="font-sans text-sm text-warm-300 italic"
             >
-              <div class="flex items-center gap-2">
-                <FileAudio
-                  :size="14"
-                  :stroke-width="1.5"
-                  class="text-warm-300 shrink-0"
-                />
-                <span class="font-mono text-sm text-warm-800 truncate">{{ rec.originalFilename }}</span>
-                <span class="font-sans text-xs text-warm-400 shrink-0">{{ formatDuration(rec.durationSeconds) }}</span>
-              </div>
-              <div class="flex items-center gap-2">
-                <select
-                  v-model="selectedRowId[rec.id]"
-                  class="flex-1 font-mono text-xs text-warm-700 bg-warm-50 border border-warm-200 rounded px-2 py-1 focus:outline-none focus:border-clin-400"
-                >
-                  <option value="">
-                    — select transcript row —
-                  </option>
-                  <option
-                    v-for="row in unmatchedRows"
-                    :key="row.id"
-                    :value="row.id"
+              None
+            </div>
+            <ul
+              v-else
+              class="space-y-3 list-none p-0 m-0"
+            >
+              <li
+                v-for="rec in unpairedRecs"
+                :key="rec.id"
+                class="rounded-lg border border-warm-200 px-3 py-3 space-y-2"
+              >
+                <div class="flex items-center gap-2">
+                  <FileAudio
+                    :size="14"
+                    :stroke-width="1.5"
+                    class="text-warm-300 shrink-0"
+                  />
+                  <span class="font-mono text-sm text-warm-800 truncate">{{ rec.originalFilename }}</span>
+                  <span class="font-sans text-xs text-warm-400 shrink-0">{{ formatDuration(rec.durationSeconds) }}</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <select
+                    v-model="selectedRowId[rec.id]"
+                    class="flex-1 font-mono text-xs text-warm-700 bg-warm-50 border border-warm-200 rounded px-2 py-1 focus:outline-none focus:border-clin-400"
                   >
-                    {{ row.path }}
-                  </option>
-                </select>
-                <button
-                  class="font-sans text-xs font-medium px-3 py-1 rounded bg-sage-600 text-white hover:bg-sage-700 transition-colors disabled:opacity-40"
-                  :disabled="!selectedRowId[rec.id]"
-                  @click="void submitPair(rec.id)"
-                >
-                  Pair
-                </button>
-              </div>
-            </li>
-          </ul>
+                    <option value="">
+                      — select transcript row —
+                    </option>
+                    <option
+                      v-for="row in unmatchedRows"
+                      :key="row.id"
+                      :value="row.id"
+                    >
+                      {{ row.path }}
+                    </option>
+                  </select>
+                  <button
+                    class="font-sans text-xs font-medium px-3 py-1 rounded bg-sage-600 text-white hover:bg-sage-700 transition-colors disabled:opacity-40"
+                    :disabled="!selectedRowId[rec.id]"
+                    @click="void submitPair(rec.id)"
+                  >
+                    Pair
+                  </button>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Unmatched transcript rows -->
+          <div>
+            <p class="font-sans text-xs font-semibold uppercase tracking-widest text-warm-400 mb-3">
+              Unmatched transcript rows ({{ unmatchedRows.length }})
+            </p>
+            <div
+              v-if="!unmatchedRows.length"
+              class="font-sans text-sm text-warm-300 italic"
+            >
+              None
+            </div>
+            <ul
+              v-else
+              class="space-y-2 list-none p-0 m-0"
+            >
+              <li
+                v-for="row in unmatchedRows"
+                :key="row.id"
+                class="rounded-lg border border-warm-200 px-3 py-2"
+              >
+                <p class="font-mono text-sm text-warm-700 m-0 truncate">
+                  {{ row.path }}
+                </p>
+                <p class="font-sans text-xs text-warm-400 m-0 mt-0.5 line-clamp-2">
+                  {{ row.label }}
+                </p>
+              </li>
+            </ul>
+          </div>
         </div>
 
-        <!-- Unmatched transcript rows -->
-        <div>
-          <p class="font-sans text-xs font-semibold uppercase tracking-widest text-warm-400 mb-3">
-            Unmatched transcript rows ({{ unmatchedRows.length }})
+        <!-- Currently paired — always shown when matched rows exist, enabling unpair -->
+        <div v-if="matchedRows.length">
+          <p class="font-sans text-xs font-semibold uppercase tracking-widest text-warm-400 mb-3 mt-2">
+            Currently paired ({{ matchedRows.length }})
           </p>
-          <div
-            v-if="!unmatchedRows.length"
-            class="font-sans text-sm text-warm-300 italic"
-          >
-            None
-          </div>
-          <ul
-            v-else
-            class="space-y-2 list-none p-0 m-0"
-          >
+          <ul class="space-y-2 list-none p-0 m-0">
             <li
-              v-for="row in unmatchedRows"
+              v-for="row in matchedRows"
               :key="row.id"
-              class="rounded-lg border border-warm-200 px-3 py-2"
+              class="rounded-lg border border-warm-100 bg-warm-50 px-3 py-2 flex items-center justify-between gap-3"
             >
-              <p class="font-mono text-sm text-warm-700 m-0 truncate">
-                {{ row.path }}
-              </p>
-              <p class="font-sans text-xs text-warm-400 m-0 mt-0.5 line-clamp-2">
-                {{ row.label }}
-              </p>
+              <div class="min-w-0">
+                <p class="font-mono text-sm text-warm-700 m-0 truncate">
+                  {{ row.path }}
+                </p>
+                <p class="font-sans text-xs text-warm-400 m-0 mt-0.5 line-clamp-1">
+                  {{ row.label }}
+                </p>
+              </div>
+              <button
+                class="font-sans text-xs font-medium px-3 py-1 rounded border border-red-200 text-red-600 hover:bg-red-50 transition-colors shrink-0"
+                @click="void unpair(row.id)"
+              >
+                Unpair
+              </button>
             </li>
           </ul>
         </div>
-      </div>
+      </template>
     </section>
   </main>
 </template>

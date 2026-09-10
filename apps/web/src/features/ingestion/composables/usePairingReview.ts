@@ -1,9 +1,18 @@
 import { ref, onMounted } from 'vue';
-import { listUnpaired, pairRow, unpairRow, type UnpairedRecording, type UnmatchedRow } from '../api/ingestion.api.js';
+import {
+  listUnpaired,
+  listMatchedRows,
+  pairRow,
+  unpairRow,
+  type UnpairedRecording,
+  type UnmatchedRow,
+  type MatchedRow,
+} from '../api/ingestion.api.js';
 
 export function usePairingReview() {
   const recordings = ref<UnpairedRecording[]>([]);
   const rows = ref<UnmatchedRow[]>([]);
+  const matchedRows = ref<MatchedRow[]>([]);
   const loading = ref(false);
   const error = ref<string | null>(null);
 
@@ -11,9 +20,10 @@ export function usePairingReview() {
     loading.value = true;
     error.value = null;
     try {
-      const data = await listUnpaired();
-      recordings.value = data.recordings;
-      rows.value = data.rows;
+      const [unpaired, matched] = await Promise.all([listUnpaired(), listMatchedRows()]);
+      recordings.value = unpaired.recordings;
+      rows.value = unpaired.rows;
+      matchedRows.value = matched;
     } catch (e) {
       error.value = e instanceof Error ? e.message : 'Failed to load pairing data';
     } finally {
@@ -33,5 +43,5 @@ export function usePairingReview() {
 
   onMounted(() => { void refresh(); });
 
-  return { recordings, rows, loading, error, refresh, pair, unpair };
+  return { recordings, rows, matchedRows, loading, error, refresh, pair, unpair };
 }

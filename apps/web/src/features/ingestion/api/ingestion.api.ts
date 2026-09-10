@@ -31,6 +31,14 @@ export interface UnmatchedRow {
   errorCode: string | null;
 }
 
+export interface MatchedRow {
+  id: string;
+  path: string;
+  label: string;
+  matchedRecordingId: string;
+  errorCode: string | null;
+}
+
 export async function uploadAudio(files: File[]): Promise<UploadResult[]> {
   const formData = new FormData();
   for (const f of files) formData.append('files', f);
@@ -68,6 +76,13 @@ export async function listUnpaired(): Promise<{ recordings: UnpairedRecording[];
     recordings: [...uploadedBody.data, ...unpairedBody.data],
     rows: rowBody.data,
   };
+}
+
+export async function listMatchedRows(): Promise<MatchedRow[]> {
+  const res = await fetch('/api/v1/import-rows?matched=true');
+  if (!res.ok) throw new Error(`Fetch failed: HTTP ${res.status}`);
+  const body = await res.json() as { data: MatchedRow[] };
+  return body.data;
 }
 
 export async function pairRow(rowId: string, recordingId: string): Promise<void> {

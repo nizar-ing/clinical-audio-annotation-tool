@@ -37,7 +37,7 @@ async function saveOverrides() {
   saving.value = true;
   error.value = null;
   try {
-    const rate = speechRateInput.value.trim();
+    const rate = String(speechRateInput.value ?? '').trim();
     const res = await overrideConditions(props.recordingId, {
       speechRateWpm: rate === '' ? null : Number(rate),
       distanceBucket: distanceInput.value === '' ? null : distanceInput.value,

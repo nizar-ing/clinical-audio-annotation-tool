@@ -82,7 +82,7 @@ function formatDuration(seconds: number): string {
 </script>
 
 <template>
-  <main class="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-6">
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 mt-8 sm:mt-20 lg:mt-36 mb-8 space-y-6">
     <!-- ── Page heading ───────────────────────────────────────────────── -->
     <div class="flex flex-wrap items-center gap-3">
       <h1 class="font-display text-2xl font-semibold text-warm-900 m-0">

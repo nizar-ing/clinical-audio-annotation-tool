@@ -17,25 +17,27 @@ import ExportButton from './features/export/components/ExportButton.vue';
       </span>
       <RouterLink
         to="/queue"
-        class="flex items-center gap-1.5 text-base font-medium text-sage-700 no-underline transition-colors border-b-2 border-transparent pb-0.5 hover:text-sage-900 hover:border-sage-500 [&.router-link-active]:text-sage-900 [&.router-link-active]:border-sage-600"
+        class="nav-pill"
       >
-        <ListChecks
-          :size="16"
-          :stroke-width="1.5"
-          class="shrink-0"
-        />
-        Queue
+        <span class="nav-pill-label">Queue</span>
+        <span class="nav-pill-icon">
+          <ListChecks
+            :size="15"
+            :stroke-width="2"
+          />
+        </span>
       </RouterLink>
       <RouterLink
         to="/ingest"
-        class="flex items-center gap-1.5 text-base font-medium text-sage-700 no-underline transition-colors border-b-2 border-transparent pb-0.5 hover:text-sage-900 hover:border-sage-500 [&.router-link-active]:text-sage-900 [&.router-link-active]:border-sage-600"
+        class="nav-pill"
       >
-        <FolderInput
-          :size="16"
-          :stroke-width="1.5"
-          class="shrink-0"
-        />
-        Ingest
+        <span class="nav-pill-label">Ingest</span>
+        <span class="nav-pill-icon">
+          <FolderInput
+            :size="15"
+            :stroke-width="2"
+          />
+        </span>
       </RouterLink>
       <div class="ml-auto">
         <ExportButton />

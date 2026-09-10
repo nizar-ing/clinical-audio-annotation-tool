@@ -133,4 +133,95 @@
       0 18px 44px rgba(0, 0, 0, 0.18),
       0 44px 96px rgba(0, 0, 0, 0.12);
   }
+
+  .nav-pill {
+    position: relative;
+    overflow: hidden;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.5rem 0.45rem 0.5rem 1.375rem;
+    border-radius: 9999px;
+    background: linear-gradient(90deg, var(--color-teal-vivid) 0%, var(--color-sage-500) 100%);
+    color: white;
+    font-weight: 700;
+    font-size: 0.875rem;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: box-shadow 0.2s ease, transform 0.15s ease;
+    box-shadow:
+      0 2px 10px rgba(20, 178, 196, 0.42),
+      inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  }
+
+  /* hover gradient fades in over the base via opacity transition */
+  .nav-pill::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, #22d3e8 0%, #50a799 100%);
+    opacity: 0;
+    transition: opacity 0.22s ease;
+    pointer-events: none;
+  }
+
+  .nav-pill:not(.router-link-active):hover::before {
+    opacity: 1;
+  }
+
+  .nav-pill:not(.router-link-active):hover {
+    box-shadow:
+      0 4px 20px rgba(34, 211, 232, 0.58),
+      inset 0 1px 0 rgba(255, 255, 255, 0.28);
+    transform: translateY(-1px);
+  }
+
+  /* active: deep navy → teal — authoritative depth, same teal hue family as base */
+  .nav-pill.router-link-active {
+    background: linear-gradient(90deg, var(--color-navy-900) 0%, var(--color-teal-vivid) 100%);
+    box-shadow:
+      0 2px 16px rgba(20, 178, 196, 0.5),
+      0 0 0 1.5px rgba(20, 178, 196, 0.35),
+      inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  }
+
+  .nav-pill-label {
+    position: relative;
+    z-index: 1;
+  }
+
+  .nav-pill-icon {
+    position: relative;
+    z-index: 1;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 9999px;
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.38) 0%, rgba(255, 255, 255, 0.1) 100%);
+    box-shadow:
+      inset 0 1.5px 0 rgba(255, 255, 255, 0.6),
+      0 0 0 1px rgba(255, 255, 255, 0.18);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.22s ease, box-shadow 0.22s ease;
+  }
+
+  /* brighter orb as hover gradient lightens the pill */
+  .nav-pill:not(.router-link-active):hover .nav-pill-icon {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.52) 0%, rgba(255, 255, 255, 0.2) 100%);
+    box-shadow:
+      inset 0 1.5px 0 rgba(255, 255, 255, 0.75),
+      0 0 0 1px rgba(255, 255, 255, 0.32);
+  }
+
+  /* teal-luminous orb — lit from within against the dark navy active gradient */
+  .nav-pill.router-link-active .nav-pill-icon {
+    background: linear-gradient(145deg, rgba(20, 178, 196, 0.72) 0%, rgba(9, 28, 51, 0.38) 100%);
+    box-shadow:
+      inset 0 1.5px 0 rgba(255, 255, 255, 0.4),
+      0 0 0 1px rgba(20, 178, 196, 0.5),
+      0 0 10px rgba(20, 178, 196, 0.38);
+  }
 }

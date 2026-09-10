@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch, nextTick } from 'vue';
+import { ref, computed, watch, nextTick, onMounted } from 'vue';
 import { AlertTriangle } from 'lucide-vue-next';
 import type { WordTiming, AlignmentMethod } from '../api/transcript.api.js';
 import type { SpanDto } from '../../annotation/api/annotation.api.js';
@@ -37,6 +37,12 @@ watch(selection, (s) => {
 // (e.g. after a load, or a re-anchor that reset). The internal ref tracks what the
 // annotator last typed to detect divergence.
 const lastMirrored = ref(props.correctedText);
+
+onMounted(() => {
+  if (correctedEl.value) {
+    correctedEl.value.innerText = props.correctedText;
+  }
+});
 watch(
   () => props.correctedText,
   async (val) => {
@@ -114,17 +120,16 @@ function formatSavedAt(date: Date | null): string {
           <template v-else>Auto-saves as you type</template>
         </span>
       </div>
-      <!-- eslint-disable vue/multiline-html-element-content-newline -->
       <div
         ref="correctedEl"
         contenteditable="plaintext-only"
+        dir="ltr"
         class="font-sans text-sm text-warm-900 leading-relaxed outline-none focus:ring-2 focus:ring-sage-200 rounded p-1 -m-1 min-h-32 whitespace-pre-wrap break-words"
         role="textbox"
         aria-multiline="true"
         spellcheck="false"
         @input="onInput"
-      >{{ correctedText }}</div>
-      <!-- eslint-enable vue/multiline-html-element-content-newline -->
+      />
     </div>
 
     <!-- Diff + review sidebar spans the row below -->

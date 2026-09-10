@@ -69,11 +69,16 @@ const formComponent = computed<Component | null>(() => {
 
 const style = computed(() => {
   if (!frozenAnchorRect.value) return { display: 'none' };
-  const top = frozenAnchorRect.value.bottom + 8 + window.scrollY;
-  const left = Math.min(
-    frozenAnchorRect.value.left + window.scrollX,
-    window.innerWidth - 320,
-  );
+  const rect = frozenAnchorRect.value;
+  // getBoundingClientRect() returns viewport-relative coordinates.
+  // position:fixed also uses viewport coordinates — scrollY/X must NOT be added.
+  // Flip above the selection when there isn't enough space below.
+  const POPOVER_HEIGHT = 300;
+  const spaceBelow = window.innerHeight - rect.bottom - 8;
+  const top = spaceBelow >= POPOVER_HEIGHT
+    ? rect.bottom + 8
+    : Math.max(8, rect.top - POPOVER_HEIGHT - 8);
+  const left = Math.min(rect.left, window.innerWidth - 320);
   return { top: `${top}px`, left: `${Math.max(8, left)}px` };
 });
 

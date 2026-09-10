@@ -132,7 +132,7 @@ const werPercent = computed(() => `${(editor.wer.value * 100).toFixed(1)}%`);
 </script>
 
 <template>
-  <main class="card-container max-w-6xl mx-auto px-6 py-8 my-8">
+  <main class="card-container max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8 my-4 sm:my-8">
     <div
       v-if="loadError"
       class="bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-3 text-sm font-sans mb-6"
@@ -142,7 +142,7 @@ const werPercent = computed(() => `${(editor.wer.value * 100).toFixed(1)}%`);
 
     <template v-else-if="recording">
       <div class="mb-6">
-        <div class="flex items-center gap-3 mb-2">
+        <div class="flex flex-wrap items-center gap-2 sm:gap-3 mb-2">
           <button
             class="flex items-center gap-2 font-sans text-base text-white font-semibold px-5 py-2.5 rounded-lg shadow-md hover:shadow-lg hover:brightness-110 transition-all border-0 cursor-pointer bg-gradient-to-br from-sky-500 to-sky-700"
             @click="router.push('/queue')"
@@ -153,27 +153,27 @@ const werPercent = computed(() => `${(editor.wer.value * 100).toFixed(1)}%`);
             />
             Queue
           </button>
-          <span class="flex items-center gap-2">
+          <span class="flex items-center gap-2 min-w-0">
             <FileAudio
               :size="16"
               :stroke-width="1.5"
               class="text-warm-400 shrink-0"
             />
-            <h1 class="font-mono text-lg font-medium text-warm-900 m-0">
+            <h1 class="font-mono text-base sm:text-lg font-medium text-warm-900 m-0 truncate">
               {{ recording.originalFilename }}
             </h1>
           </span>
           <Badge :status="recording.status as RecordingStatus" />
           <span
             v-if="editor.transcript.value"
-            class="ml-auto font-sans text-xs text-warm-500"
+            class="sm:ml-auto font-sans text-xs text-warm-500"
             title="Word Error Rate — corrected vs original"
           >
             WER · <span class="font-mono text-warm-700">{{ werPercent }}</span>
           </span>
         </div>
 
-        <div class="flex gap-5 font-sans text-sm text-clin-600">
+        <div class="flex flex-wrap gap-3 sm:gap-5 font-sans text-sm text-clin-600">
           <span class="flex items-center gap-1.5">
             <Clock
               :size="13"

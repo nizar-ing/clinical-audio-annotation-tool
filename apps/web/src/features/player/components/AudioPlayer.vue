@@ -63,7 +63,7 @@ function onSeekInput(event: Event) {
       preload="metadata"
     />
 
-    <div class="flex items-center gap-2 mb-4">
+    <div class="flex flex-wrap items-center gap-2 mb-4">
       <button
         class="flex items-center gap-1.5 font-sans text-sm border border-warm-200 bg-white hover:bg-warm-100 text-warm-700 rounded-lg px-3 py-1.5 transition-colors cursor-pointer"
         title="Skip back 5 s (←)"

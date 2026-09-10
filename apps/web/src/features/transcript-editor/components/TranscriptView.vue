@@ -70,7 +70,7 @@ function formatSavedAt(date: Date | null): string {
 </script>
 
 <template>
-  <section class="grid grid-cols-2 gap-4 mb-6">
+  <section class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 overflow-x-hidden">
     <!-- Original pane (immutable) -->
     <div class="bg-white rounded-lg border border-warm-200 shadow-sm p-4 min-h-40">
       <div class="flex items-center justify-between mb-3">
@@ -84,7 +84,7 @@ function formatSavedAt(date: Date | null): string {
           Est. alignment · {{ alignmentMethod }}
         </span>
       </div>
-      <p class="font-sans text-sm text-warm-700 m-0 leading-relaxed">
+      <p class="font-sans text-sm text-warm-700 m-0 leading-relaxed break-words">
         <template v-if="wordTimings && wordTimings.length > 0">
           <span
             v-for="(w, i) in wordTimings"
@@ -118,7 +118,7 @@ function formatSavedAt(date: Date | null): string {
       <div
         ref="correctedEl"
         contenteditable="plaintext-only"
-        class="font-sans text-sm text-warm-900 leading-relaxed outline-none focus:ring-2 focus:ring-sage-200 rounded p-1 -m-1 min-h-32 whitespace-pre-wrap"
+        class="font-sans text-sm text-warm-900 leading-relaxed outline-none focus:ring-2 focus:ring-sage-200 rounded p-1 -m-1 min-h-32 whitespace-pre-wrap break-words"
         role="textbox"
         aria-multiline="true"
         spellcheck="false"
@@ -128,7 +128,7 @@ function formatSavedAt(date: Date | null): string {
     </div>
 
     <!-- Diff + review sidebar spans the row below -->
-    <div class="col-span-2 flex gap-4">
+    <div class="col-span-1 md:col-span-2 flex flex-col md:flex-row gap-4">
       <div class="flex-1 bg-warm-50 rounded-lg border border-warm-100 p-3">
         <p class="font-sans text-xs font-semibold uppercase tracking-widest text-warm-400 m-0 mb-2">
           Changes
@@ -157,7 +157,7 @@ function formatSavedAt(date: Date | null): string {
 
       <div
         v-if="reviewSpans.length > 0"
-        class="w-64 bg-red-50 border border-red-200 rounded-lg p-3"
+        class="w-full md:w-64 bg-red-50 border border-red-200 rounded-lg p-3"
       >
         <p class="flex items-center gap-1.5 font-sans text-xs font-semibold uppercase tracking-widest text-red-700 m-0 mb-2">
           <AlertTriangle

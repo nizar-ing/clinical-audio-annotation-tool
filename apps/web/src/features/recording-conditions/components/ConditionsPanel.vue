@@ -86,7 +86,7 @@ async function clearOverrides() {
 
     <div
       v-if="conditions"
-      class="grid grid-cols-2 gap-4"
+      class="grid grid-cols-1 sm:grid-cols-2 gap-4"
     >
       <!-- Speech rate -->
       <div class="flex flex-col gap-2">

@@ -42,16 +42,16 @@ function formatWer(wer: number | null): string {
           <th class="text-left px-4 py-3 font-sans text-xs font-semibold uppercase tracking-widest text-warm-400 border-b-2 border-warm-200">
             Filename
           </th>
-          <th class="text-left px-4 py-3 font-sans text-xs font-semibold uppercase tracking-widest text-warm-400 border-b-2 border-warm-200">
+          <th class="hidden sm:table-cell text-left px-4 py-3 font-sans text-xs font-semibold uppercase tracking-widest text-warm-400 border-b-2 border-warm-200">
             Duration
           </th>
           <th class="text-left px-4 py-3 font-sans text-xs font-semibold uppercase tracking-widest text-warm-400 border-b-2 border-warm-200">
             Status
           </th>
-          <th class="text-left px-4 py-3 font-sans text-xs font-semibold uppercase tracking-widest text-warm-400 border-b-2 border-warm-200">
+          <th class="hidden sm:table-cell text-left px-4 py-3 font-sans text-xs font-semibold uppercase tracking-widest text-warm-400 border-b-2 border-warm-200">
             WER
           </th>
-          <th class="text-left px-4 py-3 font-sans text-xs font-semibold uppercase tracking-widest text-warm-400 border-b-2 border-warm-200">
+          <th class="hidden lg:table-cell text-left px-4 py-3 font-sans text-xs font-semibold uppercase tracking-widest text-warm-400 border-b-2 border-warm-200">
             Annotator
           </th>
         </tr>
@@ -75,16 +75,16 @@ function formatWer(wer: number | null): string {
               <span class="font-mono text-sm text-warm-800">{{ item.originalFilename }}</span>
             </span>
           </td>
-          <td class="px-4 py-3 align-middle font-mono text-sm text-warm-600">
+          <td class="hidden sm:table-cell px-4 py-3 align-middle font-mono text-sm text-warm-600">
             {{ formatDuration(item.durationSeconds) }}
           </td>
           <td class="px-4 py-3 align-middle">
             <Badge :status="item.status" />
           </td>
-          <td class="px-4 py-3 align-middle font-mono text-sm text-warm-600">
+          <td class="hidden sm:table-cell px-4 py-3 align-middle font-mono text-sm text-warm-600">
             {{ formatWer(item.werCached) }}
           </td>
-          <td class="px-4 py-3 align-middle font-sans text-sm text-warm-400">
+          <td class="hidden lg:table-cell px-4 py-3 align-middle font-sans text-sm text-warm-400">
             {{ item.annotator || '—' }}
           </td>
         </tr>

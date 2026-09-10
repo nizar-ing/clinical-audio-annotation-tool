@@ -25,7 +25,7 @@ const shortcuts = [
       @keydown.escape="emit('close')"
     >
       <div
-        class="bg-white rounded-xl shadow-2xl p-6 min-w-80 max-w-md"
+        class="bg-white rounded-xl shadow-2xl p-4 sm:p-6 w-full mx-4 sm:mx-0 sm:min-w-80 max-w-md"
         role="dialog"
         aria-modal="true"
         aria-label="Keyboard shortcuts"

@@ -82,9 +82,9 @@ function formatDuration(seconds: number): string {
 </script>
 
 <template>
-  <main class="max-w-4xl mx-auto px-6 py-8 space-y-6">
+  <main class="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-6">
     <!-- ── Page heading ───────────────────────────────────────────────── -->
-    <div class="flex items-center gap-3">
+    <div class="flex flex-wrap items-center gap-3">
       <h1 class="font-display text-2xl font-semibold text-warm-900 m-0">
         Ingest Recordings
       </h1>
@@ -101,7 +101,7 @@ function formatDuration(seconds: number): string {
     </div>
 
     <!-- ── Section 1: Audio upload ────────────────────────────────────── -->
-    <section class="card-container px-6 py-5 space-y-4">
+    <section class="card-container px-4 sm:px-6 py-5 space-y-4">
       <div class="flex items-center gap-2">
         <Upload
           :size="17"
@@ -204,7 +204,7 @@ function formatDuration(seconds: number): string {
     </section>
 
     <!-- ── Section 2: Transcript import ──────────────────────────────── -->
-    <section class="card-container px-6 py-5 space-y-4">
+    <section class="card-container px-4 sm:px-6 py-5 space-y-4">
       <div class="flex items-center gap-2">
         <FileJson
           :size="17"
@@ -229,7 +229,7 @@ function formatDuration(seconds: number): string {
         class="w-full font-mono text-sm text-warm-800 bg-warm-50 border border-warm-200 rounded-lg px-3 py-2 resize-y focus:outline-none focus:border-clin-400 focus:ring-1 focus:ring-clin-200 placeholder:text-warm-300"
       />
 
-      <div class="flex items-center gap-3">
+      <div class="flex flex-wrap items-center gap-3">
         <button
           class="font-sans text-sm font-medium px-4 py-2 rounded-lg bg-harvest-400 text-white hover:bg-harvest-500 transition-colors disabled:opacity-50"
           :disabled="importing"
@@ -314,7 +314,7 @@ function formatDuration(seconds: number): string {
     </section>
 
     <!-- ── Section 3: Pairing review ──────────────────────────────────── -->
-    <section class="card-container px-6 py-5 space-y-4">
+    <section class="card-container px-4 sm:px-6 py-5 space-y-4">
       <div class="flex items-center gap-2">
         <GitMerge
           :size="17"

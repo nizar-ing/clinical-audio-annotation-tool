@@ -38,7 +38,7 @@ function toggleStatus(status: RecordingStatus) {
 </script>
 
 <template>
-  <div class="flex flex-wrap gap-6 items-center py-4 border-b border-warm-200 mb-4">
+  <div class="flex flex-wrap gap-3 sm:gap-6 items-center py-4 border-b border-warm-200 mb-4">
     <div class="flex items-center gap-3 flex-wrap">
       <span class="font-sans text-xs font-semibold uppercase tracking-widest text-warm-400 mr-1">Status</span>
       <label
